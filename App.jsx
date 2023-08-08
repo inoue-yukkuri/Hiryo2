@@ -1,7 +1,15 @@
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 
 export default function App() {
-  // 関数などの機能はここに書いてく
+  const [inputValue, setInputValue] = useState('');
+  const [outputValue, setOutputValue] = useState('');
+
+  const handlePress = () => {
+    // ここで何らかの処理を行い、setOutputValueを使用して出力値を設定できます。
+    setOutputValue(inputValue); // 今回は入力値をそのまま出力として使用します。
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.appbar}>
@@ -11,41 +19,19 @@ export default function App() {
         </View>
       </View>
 
-      <View>
-        <View style={styles.memoListItem}>
-          <View>
-            <Text>買い物リスト</Text>
-            <Text>2023/08/08</Text>
-          </View>
-          <View>
-            <Text>X</Text>
-          </View>
-        </View>
-
-        <View>
-          <View>
-            <Text>買い物リスト</Text>
-            <Text>2023/08/08</Text>
-          </View>
-          <View>
-            <Text>X</Text>
-          </View>
-        </View>
-
-        <View>
-          <View>
-            <Text>買い物リスト</Text>
-            <Text>2023/08/08</Text>
-          </View>
-          <View>
-            <Text>X</Text>
-          </View>
-        </View>
-
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          value={inputValue}
+          onChangeText={setInputValue}
+          placeholder="数値を入力"
+          keyboardType="numeric"
+        />
+        <Button title="送信" onPress={handlePress} />
       </View>
 
-      <View>
-        <Text>+</Text>
+      <View style={styles.outputContainer}>
+        <Text>出力: {outputValue}</Text>
       </View>
     </View>
   );
@@ -77,5 +63,22 @@ const styles = StyleSheet.create({
     lineHeight: 32,
     color: '#ffffff',
     fontWeight: 'bold',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  input: {
+    flex: 1,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    padding: 8,
+    marginRight: 8,
+  },
+  outputContainer: {
+    marginTop: 16,
+    alignItems: 'center',
   },
 });

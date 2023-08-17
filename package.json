@@ -9,11 +9,14 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-picker/picker": "^2.4.10",
     "expo": "^47.0.14",
     "expo-status-bar": "~1.6.0",
     "prop-types": "^15.8.1",
     "react": "^18.1.0",
-    "react-native": "^0.70.5"
+    "react-native": "^0.70.5",
+    "react-native-dropdown-picker": "^5.4.6",
+    "react-native-multi-select": "^0.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

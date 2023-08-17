@@ -10,6 +10,7 @@
     },
     "rules": {
         "no-use-before-define": 0,
-        "react/react-in-jsx-scope": "off"
+        "react/react-in-jsx-scope": "off",
+        "global-require": 0
     }
 }

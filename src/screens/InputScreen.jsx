@@ -4,10 +4,6 @@ import {
 } from 'react-native';
 import AppBar from '../components/AppBar';
 import CustomSelect from '../components/CustomSelect';
-// import InputSample from '../components/InputSample';
-
-// カスタムセレクトボックスコンポーネントのインポート
-// (あるいは、上記のカスタムコンポーネントを同じファイルに書くこともできます)
 import CustomSelectBox from '../components/MultiSelectBox';
 
 export default function InputScreen() {

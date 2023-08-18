@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import AppBar from '../components/AppBar';
 import CustomSelect from '../components/CustomSelect';
-import CustomSelectBox from '../components/MultiSelectBox';
+import MultiSelectBox from '../components/MultiSelectBox';
 
 export default function InputScreen() {
   const [, setSelectedItem] = useState(null);
@@ -33,7 +33,7 @@ export default function InputScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>2.使用できる肥料を選んでください</Text>
             {/* kon */}
-            <CustomSelectBox
+            <MultiSelectBox
               options={[
                 { label: 'Option 1', value: 'opt1' },
                 { label: 'Option 2', value: 'opt2' },

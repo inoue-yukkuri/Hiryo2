@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import PropTypes from 'prop-types';
 
-function CustomSelectBox({ options }) {
+function MultiSelectBox({ options }) {
   const [selectedItems, setSelectedItems] = useState([]);
 
   const toggleItem = (item) => {
@@ -31,7 +31,7 @@ function CustomSelectBox({ options }) {
   );
 }
 
-CustomSelectBox.propTypes = {
+MultiSelectBox.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
@@ -40,4 +40,4 @@ CustomSelectBox.propTypes = {
   ).isRequired,
 };
 
-export default CustomSelectBox;
+export default MultiSelectBox;

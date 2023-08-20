@@ -1,17 +1,21 @@
-import React, { useState, alert } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, Button, Image,
 } from 'react-native';
-import AppBar from '../components/AppBar';
 import CustomSelect from '../components/CustomSelect';
 import MultiSelectBox from '../components/MultiSelectBox';
 
-export default function InputScreen() {
+export default function InputScreen(props) {
+  const { navigation } = props;
   const [, setSelectedItem] = useState(null);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const handleSelectionChange = (items) => {
+    setSelectedItems(items);
+  };
+
   return (
     <View style={styles.container}>
 
-      <AppBar />
       {/* <InputSample>出力</InputSample> */}
 
       <View style={styles.incontainer}>
@@ -22,9 +26,9 @@ export default function InputScreen() {
             <Text style={styles.sectionTitle}>1.植えたい野菜を選んでください</Text>
             <CustomSelect
               data={[
-                { label: 'Java', value: 'java' },
-                { label: 'JavaScript', value: 'js' },
-                { label: 'TypeScript', value: 'ts' },
+                { label: 'とうもろこし', value: 'toumorokoshi' },
+                { label: 'なす', value: 'nasu' },
+                { label: 'ピーマン', value: 'piman' },
               ]}
               onSelect={(item) => setSelectedItem(item)}
             />
@@ -34,12 +38,10 @@ export default function InputScreen() {
             <Text style={styles.sectionTitle}>2.使用できる肥料を選んでください</Text>
             {/* kon */}
             <MultiSelectBox
-              options={[
-                { label: 'Option 1', value: 'opt1' },
-                { label: 'Option 2', value: 'opt2' },
-                // 他のオプションを追加する場合はこちらに
-              ]}
+              options={['牛ふん１', '化学肥料(8-8-8)', 'もみ殻']}
+              onSelectionChange={handleSelectionChange}
             />
+
           </View>
 
         </View>
@@ -51,7 +53,10 @@ export default function InputScreen() {
           />
         </View>
         <View style={styles.buttonContainer}>
-          <Button title="計算" onPress={alert} />
+          <Button
+            title="計算"
+            onPress={() => { navigation.navigate('Output', { selectedItems }); }}
+          />
         </View>
       </View>
     </View>

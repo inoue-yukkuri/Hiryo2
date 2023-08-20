@@ -1,20 +1,16 @@
-import React, { useState, alert } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, Button, Image, FlatList,
 } from 'react-native';
-import AppBar from '../components/AppBar';
 
-export default function OutputScreen() {
-  const [data, setData] = useState([
-    { key: '牛ふん', value: '65.1' },
-    { key: '化学肥料(8-8-8)', value: '4.7' },
-    // ... 他のデータ
-  ]);
-
+export default function OutputScreen(props) {
+  const { navigation } = props;
+  const items = props.route.params.selectedItems;
+  const [keys] = useState(['牛ふん', '化学肥料(8-8-8)']);
+  const [values] = useState(['65.1', '4.7']);
   return (
     <View style={styles.container}>
 
-      <AppBar />
       {/* <InputSample>出力</InputSample> */}
 
       <View style={styles.incontainer}>
@@ -28,6 +24,7 @@ export default function OutputScreen() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>肥料の最適な配分</Text>
+
           {/* Table header */}
           <View style={styles.row}>
             <Text style={[styles.cell, styles.header]}>肥料名</Text>
@@ -36,7 +33,7 @@ export default function OutputScreen() {
 
           {/* Table content */}
           <FlatList
-            data={data}
+            data={items.map((key, index) => ({ key, value: values[index] }))}
             renderItem={({ item }) => (
               <View style={styles.row}>
                 <Text style={[styles.cell, styles.key]}>{item.key}</Text>
@@ -48,7 +45,10 @@ export default function OutputScreen() {
         </View>
 
         <View style={styles.buttonContainer}>
-          <Button title="もう一度計算する" onPress={alert} />
+          <Button
+            title="もう一度計算する"
+            onPress={() => { navigation.navigate('Input'); }}
+          />
         </View>
       </View>
     </View>

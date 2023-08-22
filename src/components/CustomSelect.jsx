@@ -1,8 +1,6 @@
-// CustomSelect.js
-
 import React, { useState } from 'react';
 import {
-  View, Text, TouchableOpacity, Modal, StyleSheet, FlatList,
+  View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -19,14 +17,20 @@ export default function CustomSelect({ data, onSelect }) {
         onSelect(item);
       }}
     >
-      <Text>{item.label}</Text>
+      <Text>{item}</Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.selectBox} onPress={() => setModalVisible(true)}>
-        <Text>{selectedValue.label}</Text>
+        <View style={styles.selectedItemContainer}>
+          <Text>{selectedValue}</Text>
+          <Image
+            source={require('../../assets/down-arrow_icon-icons.com_73047.png')} // 画像のパスを適切に設定してください
+            style={styles.dropdownIcon}
+          />
+        </View>
       </TouchableOpacity>
 
       <Modal
@@ -46,7 +50,7 @@ export default function CustomSelect({ data, onSelect }) {
             <FlatList
               data={data}
               renderItem={renderItem}
-              keyExtractor={(item) => item.value.toString()}
+              keyExtractor={(item) => item}
             />
           </View>
         </TouchableOpacity>
@@ -54,6 +58,11 @@ export default function CustomSelect({ data, onSelect }) {
     </View>
   );
 }
+
+CustomSelect.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.string).isRequired, // 型の指定を変更
+  onSelect: PropTypes.func.isRequired,
+};
 
 CustomSelect.propTypes = {
   data: PropTypes.arrayOf(
@@ -92,5 +101,15 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
+  },
+  selectedItemContainer: {
+    flexDirection: 'row', // 横方向にアイテムを並べます
+    alignItems: 'center', // アイテムを中央に配置します
+    justifyContent: 'space-between', // アイテムと画像の間にスペースを作ります
+  },
+  dropdownIcon: {
+    width: 15, // 画像の幅（必要に応じて調整してください）
+    height: 15, // 画像の高さ（必要に応じて調整してください）
+    marginLeft: 10, // 画像とテキストの間のスペース
   },
 });

@@ -6,7 +6,7 @@ export default function AppBar() {
     <View style={styles.appbar}>
       <View style={styles.appbarInnner}>
         <Text style={styles.appbarTitle}>肥料の最適くん</Text>
-        <Text style={styles.appbarRight}>戻る</Text>
+        {/* <Text style={styles.appbarRight}>戻る</Text> */}
       </View>
     </View>
   );

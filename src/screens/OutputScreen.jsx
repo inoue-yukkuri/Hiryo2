@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, Button, Image, FlatList,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
-export default function OutputScreen(props) {
-  const { navigation } = props;
-  const items = props.route.params.selectedItems;
-  const [keys] = useState(['牛ふん', '化学肥料(8-8-8)']);
+function OutputScreen({ navigation, route }) { // propsをデストラクティング
+  const items = route.params.selectedItems;
   const [values] = useState(['65.1', '4.7']);
   return (
     <View style={styles.container}>
@@ -110,3 +109,17 @@ const styles = StyleSheet.create({
     // スタイルを追加できます
   },
 });
+
+OutputScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    // 他のメソッドやプロパティも追加できます
+  }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      selectedItems: PropTypes.arrayOf(PropTypes.string).isRequired,
+    }).isRequired,
+  }).isRequired,
+};
+
+export default OutputScreen;

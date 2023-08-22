@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import CustomSelect from '../components/CustomSelect';
 import MultiSelectBox from '../components/MultiSelectBox';
+import { hiryou, vegetables } from '../components/data';
 
 export default function InputScreen(props) {
   const { navigation } = props;
@@ -25,20 +26,15 @@ export default function InputScreen(props) {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>1.植えたい野菜を選んでください</Text>
             <CustomSelect
-              data={[
-                { label: 'とうもろこし', value: 'toumorokoshi' },
-                { label: 'なす', value: 'nasu' },
-                { label: 'ピーマン', value: 'piman' },
-              ]}
+              data={vegetables}
               onSelect={(item) => setSelectedItem(item)}
             />
           </View>
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>2.使用できる肥料を選んでください</Text>
-            {/* kon */}
             <MultiSelectBox
-              options={['牛ふん１', '化学肥料(8-8-8)', 'もみ殻']}
+              options={hiryou}
               onSelectionChange={handleSelectionChange}
             />
 

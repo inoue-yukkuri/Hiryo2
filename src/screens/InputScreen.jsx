@@ -8,10 +8,10 @@ import { hiryou, vegetables } from '../components/data';
 
 export default function InputScreen(props) {
   const { navigation } = props;
-  const [, setSelectedItem] = useState(null);
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedYasai, setSelectedYasai] = useState('きゅうり');
+  const [selectedHiryou, setSelectedHiryou] = useState([]);
   const handleSelectionChange = (items) => {
-    setSelectedItems(items);
+    setSelectedHiryou(items);
   };
 
   return (
@@ -27,7 +27,7 @@ export default function InputScreen(props) {
             <Text style={styles.sectionTitle}>1.植えたい野菜を選んでください</Text>
             <CustomSelect
               data={vegetables}
-              onSelect={(item) => setSelectedItem(item)}
+              onSelect={(item) => setSelectedYasai(item)}
             />
           </View>
 
@@ -51,7 +51,9 @@ export default function InputScreen(props) {
         <View style={styles.buttonContainer}>
           <Button
             title="計算"
-            onPress={() => { navigation.navigate('Output', { selectedItems }); }}
+            onPress={() => {
+              navigation.navigate('Output', { selectedHiryou, selectedYasai });
+            }}
           />
         </View>
       </View>

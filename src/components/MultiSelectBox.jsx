@@ -46,10 +46,10 @@ function MultiSelectBox({ options, onSelectionChange }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.selectBox} onPress={() => setModalVisible(true)}>
-        <Text>選択してください</Text>
+        <Text>タップして選択できます→</Text>
         <Image source={require('../../assets/down-arrow_icon-icons.com_73047.png')} style={{ width: 15, height: 15 }} />
       </TouchableOpacity>
-
+      <Text style={{ color: '#808080' }}>※現在、下記の肥料が選択されています</Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

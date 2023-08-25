@@ -1,55 +1,87 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, Button, Image, FlatList,
+  View, Text, StyleSheet, Button, Image, FlatList, ActivityIndicator,
+
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 function OutputScreen({ navigation, route }) { // propsをデストラクティング
-  const items = route.params.selectedItems;
-  const [values] = useState(['65.1', '4.7']);
+  const selectHiryou = route.params.selectedHiryou;
+  const selectYasai = route.params.selectedYasai;
+  const [values, setValues] = useState([]);
+  const renderItem = ({ item }) => (
+    <View style={styles.row}>
+      <Text style={[styles.cell, styles.key]}>{item.key}</Text>
+      <Text style={[styles.cell, styles.value]}>{item.value}</Text>
+    </View>
+  );
+  console.log('selectYasai:', selectYasai);
+  const [loading, setLoading] = useState(true);
+
+  // 仮の非同期計算関数
+  const performCalculation = async () => {
+    // ここで実際の計算を行います。
+    // 今はシンプルなタイムアウトを使用していますが、将来的にはここに線形計画法のアルゴリズムを実装します。
+
+    // 例として1秒後に計算が完了したとする。
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    setValues(['65.1', '4.7']);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    performCalculation();
+  }, []);
+
   return (
     <View style={styles.container}>
-
-      {/* <InputSample>出力</InputSample> */}
-
-      <View style={styles.incontainer}>
-
-        <View style={styles.imageContainer}>
-          <Image
-            source={require('../../assets/23223480.jpg')}
-            style={{ width: 100, height: 100 }}
-          />
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text>計算しています...</Text>
         </View>
+      ) : (
+        // データが読み込まれたら、以前のコンポーネントの内容を表示します
+        <View style={styles.incontainer}>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>肥料の最適な配分</Text>
-
-          {/* Table header */}
-          <View style={styles.row}>
-            <Text style={[styles.cell, styles.header]}>肥料名</Text>
-            <Text style={[styles.cell, styles.header]}>1.0㎡に必要な量</Text>
+          <View style={styles.imageContainer}>
+            <Image
+              source={require('../../assets/23223480.jpg')}
+              style={{ width: 100, height: 100 }}
+            />
           </View>
 
-          {/* Table content */}
-          <FlatList
-            data={items.map((key, index) => ({ key, value: values[index] }))}
-            renderItem={({ item }) => (
-              <View style={styles.row}>
-                <Text style={[styles.cell, styles.key]}>{item.key}</Text>
-                <Text style={[styles.cell, styles.value]}>{item.value}</Text>
-              </View>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        </View>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              肥料の最適な配分(
+              {selectYasai}
+              )
+            </Text>
 
-        <View style={styles.buttonContainer}>
-          <Button
-            title="もう一度計算する"
-            onPress={() => { navigation.navigate('Input'); }}
-          />
+            {/* Table header */}
+            <View style={styles.row}>
+              <Text style={[styles.cell, styles.header]}>肥料名</Text>
+              <Text style={[styles.cell, styles.header]}>1.0㎡に必要な量</Text>
+            </View>
+
+            {/* Table content */}
+            <FlatList
+              data={selectHiryou.map((key, index) => ({ key, value: values[index] }))}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+              style={styles.flatlist} // このスタイルを追加
+            />
+          </View>
+
+          <View style={styles.buttonContainer}>
+            <Button
+              title="もう一度計算する"
+              onPress={() => { navigation.navigate('Input'); }}
+            />
+          </View>
         </View>
-      </View>
+      )}
     </View>
   );
 }
@@ -108,6 +140,21 @@ const styles = StyleSheet.create({
   value: {
     // スタイルを追加できます
   },
+  flatlist: {
+    maxHeight: 500, // 8項目分の高さ。1項目が17 (8+8+1(border)) であると仮定
+  },
+  scrollIndicator: {
+    textAlign: 'center',
+    padding: 5,
+    color: '#888',
+    fontStyle: 'italic',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
 });
 
 OutputScreen.propTypes = {
@@ -117,7 +164,8 @@ OutputScreen.propTypes = {
   }).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({
-      selectedItems: PropTypes.arrayOf(PropTypes.string).isRequired,
+      selectedHiryou: PropTypes.arrayOf(PropTypes.string).isRequired,
+      selectedYasai: PropTypes.string,
     }).isRequired,
   }).isRequired,
 };

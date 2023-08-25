@@ -27,7 +27,7 @@ export default function CustomSelect({ data, onSelect }) {
         <View style={styles.selectedItemContainer}>
           <Text>{selectedValue}</Text>
           <Image
-            source={require('../../assets/down-arrow_icon-icons.com_73047.png')} // 画像のパスを適切に設定してください
+            source={require('../../assets/down-arrow_icon-icons.com_73047.png')}
             style={styles.dropdownIcon}
           />
         </View>
@@ -60,17 +60,7 @@ export default function CustomSelect({ data, onSelect }) {
 }
 
 CustomSelect.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.string).isRequired, // 型の指定を変更
-  onSelect: PropTypes.func.isRequired,
-};
-
-CustomSelect.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    }),
-  ).isRequired,
+  data: PropTypes.arrayOf(PropTypes.string).isRequired,
   onSelect: PropTypes.func.isRequired,
 };
 

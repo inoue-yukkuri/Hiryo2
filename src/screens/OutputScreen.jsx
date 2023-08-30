@@ -1,9 +1,11 @@
+/* eslint-disable camelcase */
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, Button, Image, FlatList, ActivityIndicator,
 
 } from 'react-native';
 import PropTypes from 'prop-types';
+import LPsolver from '../components/LpSolver';
 
 function OutputScreen({ navigation, route }) { // propsをデストラクティング
   const selectHiryou = route.params.selectedHiryou;
@@ -20,12 +22,9 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
 
   // 仮の非同期計算関数
   const performCalculation = async () => {
-    // ここで実際の計算を行います。
-    // 今はシンプルなタイムアウトを使用していますが、将来的にはここに線形計画法のアルゴリズムを実装します。
-
     // 例として1秒後に計算が完了したとする。
+    LPsolver();
     await new Promise(resolve => setTimeout(resolve, 1000));
-
     setValues(['65.1', '4.7']);
     setLoading(false);
   };

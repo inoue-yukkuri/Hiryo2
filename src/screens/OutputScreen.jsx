@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, Button, Image, FlatList, ActivityIndicator,
 
 } from 'react-native';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 
 function OutputScreen({ navigation, route }) { // propsをデストラクティング
@@ -16,18 +17,35 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
     </View>
   );
   console.log('selectYasai:', selectYasai);
+
   const [loading, setLoading] = useState(true);
 
   // 仮の非同期計算関数
   const performCalculation = async () => {
-    // ここで実際の計算を行います。
-    // 今はシンプルなタイムアウトを使用していますが、将来的にはここに線形計画法のアルゴリズムを実装します。
+    try {
+      const response = await axios.post(
+        'https://deploy_api-1-s1457007.deta.app/hiryou_calc',
+        {
+          c_yasai: selectYasai,
+          c_hiryou: selectHiryou,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            accept: 'application/json',
+          },
+        }
+      );
 
-    // 例として1秒後に計算が完了したとする。
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    setValues(['65.1', '4.7']);
-    setLoading(false);
+      // レスポンスから必要な量を取得
+      const newValues = response.data.result['必要な量'];
+      setValues(newValues);
+      console.log('API response:', response.data);
+    } catch (error) {
+      console.error('API request error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

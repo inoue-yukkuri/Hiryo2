@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, Button, Image,
+  View, Text, StyleSheet, Image, TouchableOpacity, ScrollView,
 } from 'react-native';
 import CustomSelect from '../components/CustomSelect';
 import MultiSelectBox from '../components/MultiSelectBox';
 import { hiryou, vegetables } from '../components/data';
+// import FieldSizeInput from '../components/FieldSizeInput';
+// import FertilizerUnitInput from '../components/FertilizerUnitInput';
 
 export default function InputScreen(props) {
   const { navigation } = props;
@@ -15,49 +17,61 @@ export default function InputScreen(props) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
+      <View style={styles.container}>
 
-      {/* <InputSample>出力</InputSample> */}
+        <View style={styles.incontainer}>
 
-      <View style={styles.incontainer}>
+          <View>
 
-        <View>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>1.植えたい野菜を選んでください</Text>
+              <CustomSelect
+                data={vegetables}
+                onSelect={(item) => setSelectedYasai(item)}
+              />
+            </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>1.植えたい野菜を選んでください</Text>
-            <CustomSelect
-              data={vegetables}
-              onSelect={(item) => setSelectedYasai(item)}
-            />
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>2.使用できる肥料を複数選んでください</Text>
+              <MultiSelectBox
+                options={hiryou}
+                onSelectionChange={handleSelectionChange}
+              />
+
+            </View>
+
+            {/* <View style={styles.section}>
+              <Text style={styles.sectionTitle}>3.畑の縦と横の長さを教えてください</Text>
+              <FieldSizeInput />
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>4.出力される肥料の単位を選んでください</Text>
+              <FertilizerUnitInput />
+            </View> */}
+
           </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>2.使用できる肥料を選んでください</Text>
-            <MultiSelectBox
-              options={hiryou}
-              onSelectionChange={handleSelectionChange}
+          <View style={styles.imageContainer}>
+            <Image
+              source={require('../../assets/23223480.jpg')}
+              style={{ width: 100, height: 100 }}
             />
-
           </View>
-
-        </View>
-
-        <View style={styles.imageContainer}>
-          <Image
-            source={require('../../assets/23223480.jpg')}
-            style={{ width: 100, height: 100 }}
-          />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button
-            title="計算"
-            onPress={() => {
-              navigation.navigate('Output', { selectedHiryou, selectedYasai });
-            }}
-          />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.calculateButton}
+              onPress={() => {
+                navigation.navigate('Output', { selectedHiryou, selectedYasai });
+              }}
+            >
+              <Text style={styles.calculateButtonText}>計算</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -95,5 +109,17 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: 'center',
+  },
+  calculateButton: {
+    backgroundColor: '#00BFFF',
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+  calculateButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 18,
   },
 });

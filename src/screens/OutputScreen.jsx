@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, Image, FlatList, ActivityIndicator, TouchableOpacity, ScrollView,
+  View, Text, StyleSheet, Image, FlatList, ActivityIndicator, TouchableOpacity, ScrollView, Alert,
 
 } from 'react-native';
 import axios from 'axios';
@@ -12,6 +12,9 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
   const selectHiryou = route.params.selectedHiryou;
   const selectYasai = route.params.selectedYasai;
   const [values, setValues] = useState([]);
+  const [totalCost, setTotalCost] = useState(0);
+  const [, setStatus] = useState('');
+
   const renderItem = ({ item }) => {
     // fieldSizeのlengthとwidthを掛け合わせた値を計算します
     const getMultiplier = (unit) => {
@@ -48,7 +51,7 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
 
   const [loading, setLoading] = useState(true);
 
-  // 仮の非同期計算関数
+  // 非同期計算関数
   const performCalculation = async () => {
     try {
       const response = await axios.post(
@@ -67,7 +70,17 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
 
       // レスポンスから必要な量を取得
       const newValues = response.data.result['必要な量'];
+      const statusValue = response.data.result.status; // statusを取得
+      const totalCostValue = response.data.result['総費用'];
+
       setValues(newValues);
+      setStatus(statusValue); // statusをstateにセット
+      setTotalCost(totalCostValue);
+
+      // statusValueがOptimalでない場合、アラートを表示
+      if (statusValue !== 'Optimal') {
+        Alert.alert('少し精度の低い解が出ました\n肥料の種類を増やすと精度を上げられます');
+      }
       console.log('API response:', response.data);
     } catch (error) {
       console.error('API request error:', error);
@@ -153,6 +166,17 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
                 scrollEnabled={false} // ここを追加
                 showsVerticalScrollIndicator={false} // ここを追加
               />
+              <Text style={styles.totalCostText}>
+                計算結果は
+                {(parseFloat(fieldSize.length) * parseFloat(fieldSize.width)).toFixed(1)}
+                {getAreaUnit(fieldSize.unit)}
+                にまく必要がある各肥料の重さです
+              </Text>
+              <Text style={styles.totalCostText}>
+                予想される総費用は約
+                {parseFloat(totalCost).toFixed(1)}
+                円になります
+              </Text>
             </View>
 
             <View style={styles.buttonContainer}>
@@ -191,6 +215,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0F4F8',
+    paddingBottom: 80,
   },
   incontainer: {
     paddingHorizontal: 15,
@@ -254,6 +279,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 100,
   },
   calculateButton: {
     backgroundColor: '#00BFFF',
@@ -266,6 +292,11 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 18,
+  },
+  totalCostText: {
+    fontSize: 14,
+    marginTop: 10, // 余白を追加
+    color: 'grey',
   },
 
 });

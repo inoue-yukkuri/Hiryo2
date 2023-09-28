@@ -12,6 +12,7 @@ function MultiSelectBox({ options, onSelectionChange }) {
     '骨粉',
     '化成肥料(8-8-8)',
     'もみ殻',
+    '魚粉',
   ]);
 
   useEffect(() => {

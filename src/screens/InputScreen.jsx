@@ -53,22 +53,26 @@ export default function InputScreen(props) {
 
           </View>
 
-          <View style={styles.imageContainer}>
-            <Image
-              source={require('../../assets/23223480.jpg')}
-              style={{ width: 100, height: 100 }}
-            />
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>3.計算ボタンを押してください</Text>
+            <View style={styles.imageContainer}>
+              <Image
+                source={require('../../assets/23223480.jpg')}
+                style={{ width: 100, height: 100 }}
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.calculateButton}
+                onPress={() => {
+                  navigation.navigate('Output', { selectedHiryou, selectedYasai });
+                }}
+              >
+                <Text style={styles.calculateButtonText}>計算</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.calculateButton}
-              onPress={() => {
-                navigation.navigate('Output', { selectedHiryou, selectedYasai });
-              }}
-            >
-              <Text style={styles.calculateButtonText}>計算</Text>
-            </TouchableOpacity>
-          </View>
+
         </View>
       </View>
     </ScrollView>

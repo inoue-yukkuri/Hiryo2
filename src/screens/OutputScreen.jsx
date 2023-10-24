@@ -55,7 +55,7 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
   const performCalculation = async () => {
     try {
       const response = await axios.post(
-        'https://deploy_api-1-s1457007.deta.app/hiryou_calc',
+        'http://54.178.73.157:8000/hiryou_calc',
         {
           c_yasai: selectYasai,
           c_hiryou: selectHiryou,

@@ -8,24 +8,37 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "net.suurisaitekikun.Hiryo",
+      "buildNumber": "1.0.0"
     },
     "android": {
+      "package": "net.suurisaitekikun.Hiryo",
+      "versionCode": 2,
+      "permissions": [],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff",
-        "permissions": ["ACCESS_NETWORK_STATE", "INTERNET"]
+        "foregroundImage": "./assets/adaptive.png",
+        "backgroundImage": "./assets/background.png",
+        "permissions": [
+          "ACCESS_NETWORK_STATE",
+          "INTERNET"
+        ]
       }
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "79f5cd3b-76fd-417c-a3aa-fb73caed035a"
+      }
     }
   }
 }

@@ -14,6 +14,8 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
   const [values, setValues] = useState([]);
   const [totalCost, setTotalCost] = useState(0);
   const [, setStatus] = useState('');
+  const [imageSource, setimageSource] = useState('unknown');
+  const [OptimalText, setOptimalText] = useState('unknown');
 
   const renderItem = ({ item }) => {
     // fieldSizeのlengthとwidthを掛け合わせた値を計算します
@@ -78,9 +80,20 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
       setTotalCost(totalCostValue);
 
       // statusValueがOptimalでない場合、アラートを表示
-      if (statusValue !== 'Optimal') {
-        Alert.alert('少し精度の低い解が出ました\n肥料の種類を増やすと精度を上げられます');
+      if (statusValue === 'Optimal') {
+        Alert.alert('良い最適解が得られました！');
+        setimageSource(require('../../assets/23167399.jpg'));
+        setOptimalText('良い精度の最適解が得られました！');
+      } else if (newValues.some((value) => value > 0)) {
+        Alert.alert('最適解が得られました！');
+        setimageSource(require('../../assets/23223480.jpg'));
+        setOptimalText('最適解が得られました。');
+      } else {
+        Alert.alert('最適解が得られませんでした…');
+        setimageSource(require('../../assets/24345980.jpg'));
+        setOptimalText('最適解が得られませんでした…肥料の組み合わせを変えて計算し直すことをおすすめします');
       }
+
       console.log('API response:', response.data);
     } catch (error) {
       console.error('API request error:', error);
@@ -135,16 +148,18 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
 
             <View style={styles.imageContainer}>
               <Image
-                source={require('../../assets/23223480.jpg')}
+                source={imageSource}
                 style={{ width: 100, height: 100 }}
               />
             </View>
-
+            <Text style={styles.NotsectionText}>
+              {OptimalText}
+            </Text>
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>
-                肥料の最適な配分(
+                肥料の最適な配分【
                 {selectYasai}
-                )
+                】
               </Text>
 
               {/* Table header */}
@@ -234,6 +249,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
     fontWeight: 'bold',
+  },
+  NotsectionText: {
+    fontSize: 16,
+    marginBottom: 10,
+    textAlign: 'center',
   },
   imageContainer: {
     alignItems: 'center',

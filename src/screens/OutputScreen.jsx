@@ -14,7 +14,7 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
   const [values, setValues] = useState([]);
   const [totalCost, setTotalCost] = useState(0);
   const [, setStatus] = useState('');
-  const [imageSource, setimageSource] = useState('unknown');
+  const [imageSource, setimageSource] = useState(require('../../assets/23223480.jpg'));
   const [OptimalText, setOptimalText] = useState('unknown');
 
   const renderItem = ({ item }) => {

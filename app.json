@@ -43,6 +43,8 @@
   },
   "react-native-google-mobile-ads": {
     "android_app_id": "ca-app-pub-4189981999969719~3191852158",
-    "ios_app_id": "ca-app-pub-4189981999969719~4467568511"
+    "ios_app_id": "ca-app-pub-4189981999969719~4467568511",
+    "delay_app_measurement_init": true,
+    "user_tracking_usage_description": "許可することで、より関連性の高い広告を表示することができるようになります。"
   }
 }

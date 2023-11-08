@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, Image, TouchableOpacity, ScrollView,
 } from 'react-native';
+import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
+import { useFocusEffect } from '@react-navigation/native';
 import CustomSelect from '../components/CustomSelect';
 import MultiSelectBox from '../components/MultiSelectBox';
 import { hiryou, vegetables } from '../components/data';
-import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
 // import FieldSizeInput from '../components/FieldSizeInput';
 // import FertilizerUnitInput from '../components/FertilizerUnitInput';
 
@@ -33,8 +34,10 @@ export default function InputScreen(props) {
     });
     const unsubscribeEarned = rewarded.addAdEventListener(
       RewardedAdEventType.EARNED_REWARD,
-      reward => {
+      (reward) => {
         console.log('User earned reward of ', reward);
+        // rewarded.load();
+        setLoaded(false);
       },
     );
 
@@ -47,6 +50,21 @@ export default function InputScreen(props) {
       unsubscribeEarned();
     };
   }, []);
+
+  // 広告をロードする関数
+  const loadAd = () => {
+    if (!loaded) {
+      rewarded.load();
+    }
+  };
+
+  // 画面がフォーカスされた時に広告を再ロード
+  useFocusEffect(
+    React.useCallback(() => {
+      loadAd();
+      // ここに依存配列として 'loaded' ステートを指定します
+    }, [loaded]),
+  );
 
   // No advert ready to show yet
   if (!loaded) {
@@ -103,6 +121,7 @@ export default function InputScreen(props) {
                 style={styles.calculateButton}
                 onPress={() => {
                   navigation.navigate('Output', { selectedHiryou, selectedYasai });
+                  rewarded.show();
                 }}
               >
                 <Text style={styles.calculateButtonText}>計算</Text>

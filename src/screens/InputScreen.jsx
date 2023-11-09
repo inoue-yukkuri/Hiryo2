@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
 import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomSelect from '../components/CustomSelect';
 import MultiSelectBox from '../components/MultiSelectBox';
 import { hiryou, vegetables } from '../components/data';
@@ -17,12 +18,53 @@ const rewarded = RewardedAd.createForAdRequest(adUnitId, {
   keywords: ['fashion', 'clothing'],
 });
 
+const MAX_FREE_CALCULATIONS_PER_DAY = 5;
+const LAST_USED_DATE_KEY = 'lastUsedDate';
+const CALCULATION_COUNTER_KEY = 'calculationCounter';
+
 export default function InputScreen(props) {
   const { navigation } = props;
   const [selectedYasai, setSelectedYasai] = useState('きゅうり');
   const [selectedHiryou, setSelectedHiryou] = useState([]);
   const handleSelectionChange = (items) => {
     setSelectedHiryou(items);
+  };
+  const [calculationCounter, setCalculationCounter] = useState(0);
+
+  useEffect(() => {
+    // アプリ起動時に最後に使用した日付と計算回数を取得
+    const initializeCounter = async () => {
+      const lastUsedDate = await AsyncStorage.getItem(LAST_USED_DATE_KEY);
+      const today = new Date().toISOString().split('T')[0];
+      if (lastUsedDate === today) {
+        // 同じ日付であれば、計算回数を取得
+        const counterString = await AsyncStorage.getItem(CALCULATION_COUNTER_KEY);
+        setCalculationCounter(parseInt(counterString, 10) || 0);
+      } else {
+        // 新しい日付であれば、カウンタをリセット
+        await AsyncStorage.setItem(LAST_USED_DATE_KEY, today);
+        setCalculationCounter(0);
+        await AsyncStorage.setItem(CALCULATION_COUNTER_KEY, '0');
+      }
+    };
+    initializeCounter();
+  }, []);
+
+  const navigateToOutputScreen = async () => {
+    // 移動回数を増やす
+    const newCounter = calculationCounter + 1;
+    setCalculationCounter(newCounter);
+    await AsyncStorage.setItem(CALCULATION_COUNTER_KEY, newCounter.toString());
+
+    if (newCounter > MAX_FREE_CALCULATIONS_PER_DAY) {
+      // リワード広告を表示
+      rewarded.show();
+      setCalculationCounter(0);
+      navigation.navigate('Output', { selectedHiryou, selectedYasai });
+    } else {
+      // 通常の画面遷移
+      navigation.navigate('Output', { selectedHiryou, selectedYasai });
+    }
   };
 
   const [loaded, setLoaded] = useState(false);
@@ -120,8 +162,7 @@ export default function InputScreen(props) {
               <TouchableOpacity
                 style={styles.calculateButton}
                 onPress={() => {
-                  navigation.navigate('Output', { selectedHiryou, selectedYasai });
-                  rewarded.show();
+                  navigateToOutputScreen();
                 }}
               >
                 <Text style={styles.calculateButtonText}>計算</Text>

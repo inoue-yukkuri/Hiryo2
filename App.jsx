@@ -46,7 +46,8 @@ export default function App() {
     initializeAds();
   }, []);
 
-  const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy';
+  // eslint-disable-next-line no-undef
+  const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-4189981999969719/2404908731';
 
   return (
     <NavigationContainer>

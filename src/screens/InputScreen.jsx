@@ -11,7 +11,8 @@ import { hiryou, vegetables } from '../components/data';
 // import FieldSizeInput from '../components/FieldSizeInput';
 // import FertilizerUnitInput from '../components/FertilizerUnitInput';
 
-const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy';
+// eslint-disable-next-line no-undef
+const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-4189981999969719/6208422377';
 
 const rewarded = RewardedAd.createForAdRequest(adUnitId, {
   requestNonPersonalizedAdsOnly: true,

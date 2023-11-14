@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, Image, FlatList, ActivityIndicator, TouchableOpacity, ScrollView, Alert,
+  View, Text, StyleSheet, Image, FlatList, ActivityIndicator, TouchableOpacity, ScrollView,
 
 } from 'react-native';
 import axios from 'axios';
@@ -57,7 +57,7 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
   const performCalculation = async () => {
     try {
       const response = await axios.post(
-        'http://52.199.108.162:8000/hiryou_calc',
+        'https://www.saitekikun.com/hiryou_calc',
         {
           c_yasai: selectYasai,
           c_hiryou: selectHiryou,
@@ -81,15 +81,15 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
 
       // statusValueがOptimalでない場合、アラートを表示
       if (statusValue === 'Optimal') {
-        Alert.alert('良い最適解が得られました！');
+        // Alert.alert('良い最適解が得られました！');
         setimageSource(require('../../assets/23167399.jpg'));
         setOptimalText('良い精度の最適解が得られました！');
-      } else if (newValues.some((value) => value > 0)) {
-        Alert.alert('最適解が得られました！');
+      } else if (newValues.every((value) => value >= 0)) {
+        // Alert.alert('最適解が得られました！');
         setimageSource(require('../../assets/23223480.jpg'));
-        setOptimalText('最適解が得られました。');
+        setOptimalText('最適解が得られました');
       } else {
-        Alert.alert('最適解が得られませんでした…');
+        // Alert.alert('最適解が得られませんでした…');
         setimageSource(require('../../assets/24345980.jpg'));
         setOptimalText('最適解が得られませんでした…肥料の組み合わせを変えて計算し直すことをおすすめします');
       }

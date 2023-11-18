@@ -2,7 +2,7 @@
   "expo": {
     "name": "Hiryo2",
     "slug": "Hiryo2",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "net.suurisaitekikun.Hiryo",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.1"
     },
     "android": {
       "package": "net.suurisaitekikun.Hiryo",
@@ -39,7 +39,23 @@
       "eas": {
         "projectId": "79f5cd3b-76fd-417c-a3aa-fb73caed035a"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 31,
+            "targetSdkVersion": 31,
+            "buildToolsVersion": "31.0.0"
+          },
+          "ios": {
+            "deploymentTarget": "13.0",
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ]
   },
   "react-native-google-mobile-ads": {
     "android_app_id": "ca-app-pub-4189981999969719~3191852158",

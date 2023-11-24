@@ -13,9 +13,17 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
   const selectYasai = route.params.selectedYasai;
   const [values, setValues] = useState([]);
   const [totalCost, setTotalCost] = useState(0);
+  const arrayNPKW = ['窒素(N)', 'リン(P)', 'カリウム(K)', '有機質量'];
+  const [calcNPKW, setCalcNPKW] = useState([]);
+  const [idealNPKW, setidealNPKW] = useState([]);
   const [, setStatus] = useState('');
   const [imageSource, setimageSource] = useState(require('../../assets/23223480.jpg'));
   const [OptimalText, setOptimalText] = useState('unknown');
+  const NPKWcombinedData = arrayNPKW.map((item, index) => ({
+    arrayItem: item,
+    idealItem: idealNPKW[index],
+    calcItem: calcNPKW[index],
+  }));
 
   const renderItem = ({ item }) => {
     // fieldSizeのlengthとwidthを掛け合わせた値を計算します
@@ -49,6 +57,23 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
       </View>
     );
   };
+
+  const renderItem2 = ({ item }) => (
+    <View style={styles.row}>
+      <Text style={styles.cell}>{item.arrayItem}</Text>
+      <Text style={styles.cell}>
+        {item.idealItem.toFixed(1)}
+        {' '}
+        g/㎡
+      </Text>
+      <Text style={styles.cell}>
+        {item.calcItem.toFixed(1)}
+        {' '}
+        g/㎡
+      </Text>
+    </View>
+  );
+
   console.log('selectYasai:', selectYasai);
 
   const [loading, setLoading] = useState(true);
@@ -74,10 +99,14 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
       const newValues = response.data.result['必要な量'];
       const statusValue = response.data.result.status; // statusを取得
       const totalCostValue = response.data.result['総費用'];
+      const newcalcNPKW = response.data.result['最適化後NPKW'];
+      const newidealNPKW = response.data.result['理想量'];
 
       setValues(newValues);
       setStatus(statusValue); // statusをstateにセット
       setTotalCost(totalCostValue);
+      setCalcNPKW(newcalcNPKW);
+      setidealNPKW(newidealNPKW);
 
       // statusValueがOptimalでない場合、アラートを表示
       if (statusValue === 'Optimal') {
@@ -155,6 +184,7 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
             <Text style={styles.NotsectionText}>
               {OptimalText}
             </Text>
+
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>
                 肥料の最適な配分【
@@ -217,6 +247,35 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
               />
               <Text>出力される肥料の単位</Text>
               <FertilizerUnitInput onUnitSelected={setFertilizerUnit} />
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>
+                施肥基準と計算結果の比較【
+                {selectYasai}
+                】
+              </Text>
+
+              {/* Table header */}
+              <View style={styles.row}>
+                <Text style={[styles.cell, styles.header]}>肥料成分</Text>
+                <Text style={[styles.cell, styles.header]}>施肥基準</Text>
+                <Text style={[styles.cell, styles.header]}>計算結果</Text>
+              </View>
+
+              {/* Table content */}
+              <FlatList
+                data={NPKWcombinedData}
+                renderItem={renderItem2}
+                keyExtractor={(item, index) => `NPKW-${index}`}
+                style={styles.flatlist}
+                scrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+              />
+
+              <Text style={styles.totalCostText}>
+                農林水産省の施肥基準を参考にしています
+              </Text>
             </View>
 
           </View>

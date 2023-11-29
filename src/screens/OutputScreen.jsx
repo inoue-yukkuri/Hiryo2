@@ -222,6 +222,9 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
                 {parseFloat(totalCost).toFixed(1)}
                 円になります
               </Text>
+              <Text style={styles.totalCostText}>
+                計算結果は元肥の量です。野菜の成長に合わせて追肥等をしてください
+              </Text>
             </View>
 
             <View style={styles.buttonContainer}>

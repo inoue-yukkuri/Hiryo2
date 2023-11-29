@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, ScrollView,
+  View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Button,
 } from 'react-native';
 import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
 import { useFocusEffect } from '@react-navigation/native';
@@ -170,6 +170,11 @@ export default function InputScreen(props) {
               </TouchableOpacity>
             </View>
           </View>
+
+          <Button
+            title="カスタム野菜データを作成する"
+            onPress={() => { navigation.navigate('CustomYasai'); }}
+          />
 
         </View>
       </View>

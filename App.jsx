@@ -12,6 +12,7 @@ import mobileAds, { MaxAdContentRating } from 'react-native-google-mobile-ads';
 import AppBar from './src/components/AppBar';
 import InputScreen from './src/screens/InputScreen';
 import OutputScreen from './src/screens/OutputScreen';
+import CustomYasai from './src/components/CustomYasai';
 
 const Stack = createStackNavigator();
 
@@ -27,7 +28,7 @@ export default function App() {
       // Check for consent for EU users
       const consentInfo = await AdsConsent.requestInfoUpdate({
         debugGeography: AdsConsentDebugGeography.EEA, // EU圏としてテストする設定
-        testDeviceIdentifiers: ["TEST-DEVICE-HASHED-ID"],
+        testDeviceIdentifiers: ['TEST-DEVICE-HASHED-ID'],
       });
 
       let { status } = consentInfo;
@@ -60,6 +61,7 @@ export default function App() {
       >
         <Stack.Screen name="Input" component={InputScreen} />
         <Stack.Screen name="Output" component={OutputScreen} />
+        <Stack.Screen name="CustomYasai" component={CustomYasai} />
       </Stack.Navigator>
       <BannerAd
         unitId={adUnitId}

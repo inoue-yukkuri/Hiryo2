@@ -1,0 +1,267 @@
+import React, { useState, useEffect } from 'react';
+import {
+  View, Text, Button, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const CUSTOM_YASAI_KEY = 'customYasai';
+
+function CustomYasai({ navigation }) {
+  const [customYasai, setCustomYasai] = useState({
+    yasai: [],
+    N: [],
+    P: [],
+    K: [],
+    W: [],
+  });
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newYasai, setNewYasai] = useState({
+    yasai: '', N: '', P: '', K: '', W: '',
+  });
+  const [editingIndex, setEditingIndex] = useState(null);
+
+  useEffect(() => {
+    loadYasaiData();
+  }, []);
+
+  const loadYasaiData = async () => {
+    try {
+      const yasaiData = await AsyncStorage.getItem(CUSTOM_YASAI_KEY);
+      if (yasaiData) setCustomYasai(JSON.parse(yasaiData));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const addYasaiData = async () => {
+    if (editingIndex !== null) {
+      customYasai.N[editingIndex] = parseFloat(newYasai.N);
+      customYasai.P[editingIndex] = parseFloat(newYasai.P);
+      customYasai.K[editingIndex] = parseFloat(newYasai.K);
+      customYasai.W[editingIndex] = parseFloat(newYasai.W);
+    } else {
+      customYasai.yasai.push(newYasai.yasai);
+      customYasai.N.push(parseFloat(newYasai.N));
+      customYasai.P.push(parseFloat(newYasai.P));
+      customYasai.K.push(parseFloat(newYasai.K));
+      customYasai.W.push(parseFloat(newYasai.W));
+    }
+
+    try {
+      const jsonData = JSON.stringify(customYasai);
+      await AsyncStorage.setItem(CUSTOM_YASAI_KEY, jsonData);
+      setCustomYasai({ ...customYasai });
+      setModalVisible(false);
+      setEditingIndex(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onDeleteItem = async () => {
+    if (editingIndex !== null) {
+      customYasai.yasai.splice(editingIndex, 1);
+      customYasai.N.splice(editingIndex, 1);
+      customYasai.P.splice(editingIndex, 1);
+      customYasai.K.splice(editingIndex, 1);
+      customYasai.W.splice(editingIndex, 1);
+
+      try {
+        const jsonData = JSON.stringify(customYasai);
+        await AsyncStorage.setItem(CUSTOM_YASAI_KEY, jsonData);
+        setCustomYasai({ ...customYasai });
+        setModalVisible(false);
+        setEditingIndex(null);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const onEditItem = (index) => {
+    setNewYasai({
+      yasai: customYasai.yasai[index],
+      N: customYasai.N[index] ? customYasai.N[index].toString() : '0',
+      P: customYasai.P[index] ? customYasai.P[index].toString() : '0',
+      K: customYasai.K[index] ? customYasai.K[index].toString() : '0',
+      W: customYasai.W[index] ? customYasai.W[index].toString() : '0',
+    });
+    setEditingIndex(index);
+    setModalVisible(true);
+  };
+
+  const renderYasaiItem = ({ item, index }) => (
+    <TouchableOpacity style={styles.row} onPress={() => onEditItem(index)}>
+      <Text style={[styles.cell, styles.key]}>{item}</Text>
+      <Text style={[styles.cell, styles.value]}>
+        {customYasai.N[index]}
+        {' '}
+        g/㎡
+      </Text>
+      <Text style={[styles.cell, styles.value]}>
+        {customYasai.P[index]}
+        {' '}
+        g/㎡
+      </Text>
+      <Text style={[styles.cell, styles.value]}>
+        {customYasai.K[index]}
+        {' '}
+        g/㎡
+      </Text>
+    </TouchableOpacity>
+  );
+
+  const renderYasaiHeader = () => (
+    <View style={styles.headerRow}>
+      <Text style={[styles.headerCell, styles.keyHeader]}>名前</Text>
+      <Text style={[styles.headerCell, styles.valueHeader]}>N (g/㎡)</Text>
+      <Text style={[styles.headerCell, styles.valueHeader]}>P (g/㎡)</Text>
+      <Text style={[styles.headerCell, styles.valueHeader]}>K (g/㎡)</Text>
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      <Text>カスタム野菜データ</Text>
+      {renderYasaiHeader()}
+      <FlatList
+        data={customYasai.yasai}
+        renderItem={renderYasaiItem}
+        keyExtractor={(item, index) => index.toString()}
+      />
+      <Button
+        title="新しい野菜を登録する"
+        onPress={() => {
+          setEditingIndex(null);
+          setNewYasai({
+            yasai: '', N: '', P: '', K: '', W: '',
+          });
+          setModalVisible(true);
+        }}
+      />
+      <Button
+        title="計算画面に戻る"
+        onPress={() => { navigation.navigate('Input'); }}
+      />
+
+      <Modal
+        animationType="slide"
+        transparent
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalView}>
+          <Text>野菜の名前</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setNewYasai({ ...newYasai, yasai: text })}
+            value={newYasai.yasai}
+            placeholder="野菜の名前"
+          />
+          <Text>窒素N(g/㎡)</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setNewYasai({ ...newYasai, N: text })}
+            value={newYasai.N}
+            placeholder="窒素N"
+          />
+          <Text>リンP(g/㎡)</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setNewYasai({ ...newYasai, P: text })}
+            value={newYasai.P}
+            placeholder="リンP"
+          />
+          <Text>カリウムK(g/㎡)</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setNewYasai({ ...newYasai, K: text })}
+            value={newYasai.K}
+            placeholder="カリウムK"
+          />
+          <Button title="登録" onPress={addYasaiData} />
+          {editingIndex !== null && (
+            <Button title="削除" onPress={onDeleteItem} color="red" />
+          )}
+          <Button title="キャンセル" onPress={() => setModalVisible(false)} />
+        </View>
+      </Modal>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#f0f0f0',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  cell: {
+    margin: 5,
+    minWidth: 50,
+    textAlign: 'center',
+  },
+  modalView: {
+    marginTop: 200,
+    marginHorizontal: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  input: {
+    height: 40,
+    marginVertical: 12,
+    borderWidth: 1,
+    padding: 10,
+    width: 200,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#f0f0f0',
+  },
+  headerCell: {
+    margin: 5,
+    minWidth: 50,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  keyHeader: {
+    flex: 2, // 名前カラムを他のカラムより広くする
+  },
+  valueHeader: {
+    flex: 1,
+  },
+  tableContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    margin: 10,
+    width: '95%',
+  },
+});
+
+export default CustomYasai;

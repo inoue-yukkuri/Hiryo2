@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CUSTOM_YASAI_KEY = 'customYasai';
 
-function CustomYasai({ navigation }) {
+function CustomHiryou({ navigation }) {
   const [customYasai, setCustomYasai] = useState({
     yasai: [],
     N: [],
@@ -277,4 +277,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomYasai;
+export default CustomHiryou;

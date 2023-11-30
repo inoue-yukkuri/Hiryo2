@@ -13,6 +13,7 @@ import AppBar from './src/components/AppBar';
 import InputScreen from './src/screens/InputScreen';
 import OutputScreen from './src/screens/OutputScreen';
 import CustomYasai from './src/components/CustomYasai';
+import CustomHiryou from './src/components/CustomHiryou';
 
 const Stack = createStackNavigator();
 
@@ -62,6 +63,7 @@ export default function App() {
         <Stack.Screen name="Input" component={InputScreen} />
         <Stack.Screen name="Output" component={OutputScreen} />
         <Stack.Screen name="CustomYasai" component={CustomYasai} />
+        <Stack.Screen name="CustomHiryou" component={CustomHiryou} />
       </Stack.Navigator>
       <BannerAd
         unitId={adUnitId}

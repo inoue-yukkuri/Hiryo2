@@ -175,6 +175,10 @@ export default function InputScreen(props) {
             title="カスタム野菜データを作成する"
             onPress={() => { navigation.navigate('CustomYasai'); }}
           />
+          <Button
+            title="カスタム肥料データを作成する"
+            onPress={() => { navigation.navigate('CustomHiryou'); }}
+          />
 
         </View>
       </View>

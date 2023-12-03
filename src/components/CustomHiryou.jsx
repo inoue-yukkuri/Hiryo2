@@ -100,23 +100,19 @@ function CustomHiryou({ navigation }) {
       <Text style={[styles.cell, styles.key]}>{item}</Text>
       <Text style={[styles.cell, styles.value]}>
         {customHiryou.Price[index]}
-        {' '}
         円/g
       </Text>
       <Text style={[styles.cell, styles.value]}>
         {customHiryou.N[index]}
         {' '}
-        %
       </Text>
       <Text style={[styles.cell, styles.value]}>
         {customHiryou.P[index]}
         {' '}
-        %
       </Text>
       <Text style={[styles.cell, styles.value]}>
         {customHiryou.K[index]}
         {' '}
-        %
       </Text>
     </TouchableOpacity>
   );
@@ -125,9 +121,9 @@ function CustomHiryou({ navigation }) {
     <View style={styles.headerRow}>
       <Text style={[styles.headerCell, styles.keyHeader]}>名前</Text>
       <Text style={[styles.headerCell, styles.valueHeader]}>価格</Text>
-      <Text style={[styles.headerCell, styles.valueHeader]}>N (%)</Text>
-      <Text style={[styles.headerCell, styles.valueHeader]}>P (%)</Text>
-      <Text style={[styles.headerCell, styles.valueHeader]}>K (%)</Text>
+      <Text style={[styles.headerCell, styles.valueHeader]}>N</Text>
+      <Text style={[styles.headerCell, styles.valueHeader]}>P</Text>
+      <Text style={[styles.headerCell, styles.valueHeader]}>K</Text>
     </View>
   );
 
@@ -174,28 +170,28 @@ function CustomHiryou({ navigation }) {
             style={styles.input}
             onChangeText={(text) => setNewHiryou({ ...newHiryou, Price: text })}
             value={newHiryou.Price}
-            placeholder="単位は(円/g)で入力してください"
+            placeholder="単位は(円/g)で入力"
           />
-          <Text>窒素N(%)</Text>
+          <Text>窒素N(百分率)</Text>
           <TextInput
             style={styles.input}
             onChangeText={(text) => setNewHiryou({ ...newHiryou, N: text })}
             value={newHiryou.N}
-            placeholder="窒素N"
+            placeholder="例)14%の場合は0.14"
           />
-          <Text>リンP(%)</Text>
+          <Text>リンP(百分率)</Text>
           <TextInput
             style={styles.input}
             onChangeText={(text) => setNewHiryou({ ...newHiryou, P: text })}
             value={newHiryou.P}
-            placeholder="リンP"
+            placeholder="例)14%の場合は0.14"
           />
-          <Text>カリウムK(%)</Text>
+          <Text>カリウムK(百分率)</Text>
           <TextInput
             style={styles.input}
             onChangeText={(text) => setNewHiryou({ ...newHiryou, K: text })}
             value={newHiryou.K}
-            placeholder="カリウムK"
+            placeholder="例)14%の場合は0.14"
           />
           <Button title="登録" onPress={addHiryouData} />
           {editingIndex !== null && (

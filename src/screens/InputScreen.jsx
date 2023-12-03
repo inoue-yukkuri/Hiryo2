@@ -54,7 +54,7 @@ export default function InputScreen(props) {
 
   useEffect(() => {
     loadYasaiData();
-    // console.log(combinedVegetables);
+    console.log(combinedVegetables);
   }, []);
 
   // カスタム肥料を読み込む

@@ -174,6 +174,7 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
         setOptimalText('最適解が得られませんでした…肥料の組み合わせを変えて計算し直すことをおすすめします');
       }
 
+      console.log('customYasai :', customYasai);
       console.log('API response:', response.data);
     } catch (error) {
       console.error('API request error:', error);

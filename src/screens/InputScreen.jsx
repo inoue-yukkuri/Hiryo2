@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomSelect from '../components/CustomSelect';
 import MultiSelectBox from '../components/MultiSelectBox';
 import { hiryou, vegetables } from '../components/data';
+import CustomHiryou from '../components/CustomHiryou';
 // import FieldSizeInput from '../components/FieldSizeInput';
 // import FertilizerUnitInput from '../components/FertilizerUnitInput';
 
@@ -30,6 +31,59 @@ export default function InputScreen(props) {
   const handleSelectionChange = (items) => {
     setSelectedHiryou(items);
   };
+
+  // カスタム野菜を読み込む
+  const [combinedVegetables, setCombinedVegetables] = useState(vegetables);
+  const CUSTOM_YASAI_KEY = 'customYasai';
+  const [customYasai, setCustomYasai] = useState({
+    yasai: [],
+    N: [],
+    P: [],
+    K: [],
+    W: [],
+  });
+
+  const loadYasaiData = async () => {
+    try {
+      const yasaiData = await AsyncStorage.getItem(CUSTOM_YASAI_KEY);
+      if (yasaiData) setCustomYasai(JSON.parse(yasaiData));
+      setCombinedVegetables([...vegetables, ...customYasai.yasai]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    loadYasaiData();
+    // console.log(combinedVegetables);
+  }, []);
+
+  // カスタム肥料を読み込む
+  const [combinedHiryou, setCombinedHiryou] = useState(hiryou);
+  const CUSTOM_HIRYOU_KEY = 'customHiryou';
+  const [customHiryou, setCustomHiryou] = useState({
+    hiryou: [],
+    Price: [],
+    N: [],
+    P: [],
+    K: [],
+  });
+
+  const loadHiryouData = async () => {
+    try {
+      const hiryouData = await AsyncStorage.getItem(CUSTOM_HIRYOU_KEY);
+      if (hiryouData) setCustomHiryou(JSON.parse(hiryouData));
+      setCombinedHiryou([...hiryou, ...customHiryou.hiryou]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    loadHiryouData();
+    // console.log(combinedHiryou);
+  }, []);
+
   const [calculationCounter, setCalculationCounter] = useState(0);
 
   useEffect(() => {
@@ -125,7 +179,7 @@ export default function InputScreen(props) {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>1.植えたい野菜を選んでください</Text>
               <CustomSelect
-                data={vegetables}
+                data={combinedVegetables}
                 onSelect={(item) => setSelectedYasai(item)}
               />
             </View>
@@ -133,7 +187,7 @@ export default function InputScreen(props) {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>2.使用できる肥料を複数選んでください</Text>
               <MultiSelectBox
-                options={hiryou}
+                options={combinedHiryou}
                 onSelectionChange={handleSelectionChange}
               />
 

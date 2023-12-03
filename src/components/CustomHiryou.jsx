@@ -4,54 +4,58 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const CUSTOM_YASAI_KEY = 'customYasai';
+const CUSTOM_HIRYOU_KEY = 'customHiryou';
 
 function CustomHiryou({ navigation }) {
-  const [customYasai, setCustomYasai] = useState({
-    yasai: [],
+  const [customHiryou, setCustomHiryou] = useState({
+    hiryou: [],
+    Price: [],
     N: [],
     P: [],
     K: [],
-    W: [],
   });
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [newYasai, setNewYasai] = useState({
-    yasai: '', N: '', P: '', K: '', W: '',
+  const [newHiryou, setNewHiryou] = useState({
+    hiryou: '', Price: '', N: '', P: '', K: '',
   });
   const [editingIndex, setEditingIndex] = useState(null);
 
   useEffect(() => {
-    loadYasaiData();
+    loadHiryouData();
   }, []);
 
-  const loadYasaiData = async () => {
+  const loadHiryouData = async () => {
     try {
-      const yasaiData = await AsyncStorage.getItem(CUSTOM_YASAI_KEY);
-      if (yasaiData) setCustomYasai(JSON.parse(yasaiData));
+      const hiryouData = await AsyncStorage.getItem(CUSTOM_HIRYOU_KEY);
+      if (hiryouData) setCustomHiryou(JSON.parse(hiryouData));
     } catch (error) {
       console.error(error);
     }
   };
 
-  const addYasaiData = async () => {
+  const addHiryouData = async () => {
+    let updatedHiryou = { ...customHiryou };
+
     if (editingIndex !== null) {
-      customYasai.N[editingIndex] = parseFloat(newYasai.N);
-      customYasai.P[editingIndex] = parseFloat(newYasai.P);
-      customYasai.K[editingIndex] = parseFloat(newYasai.K);
-      customYasai.W[editingIndex] = parseFloat(newYasai.W);
+      updatedHiryou.N[editingIndex] = parseFloat(newHiryou.N);
+      updatedHiryou.P[editingIndex] = parseFloat(newHiryou.P);
+      updatedHiryou.K[editingIndex] = parseFloat(newHiryou.K);
+      updatedHiryou.Price[editingIndex] = parseFloat(newHiryou.Price);
     } else {
-      customYasai.yasai.push(newYasai.yasai);
-      customYasai.N.push(parseFloat(newYasai.N));
-      customYasai.P.push(parseFloat(newYasai.P));
-      customYasai.K.push(parseFloat(newYasai.K));
-      customYasai.W.push(parseFloat(newYasai.W));
+      updatedHiryou = {
+        hiryou: [...customHiryou.hiryou, newHiryou.hiryou],
+        Price: [...customHiryou.Price, parseFloat(newHiryou.Price)],
+        N: [...customHiryou.N, parseFloat(newHiryou.N)],
+        P: [...customHiryou.P, parseFloat(newHiryou.P)],
+        K: [...customHiryou.K, parseFloat(newHiryou.K)],
+      };
     }
 
     try {
-      const jsonData = JSON.stringify(customYasai);
-      await AsyncStorage.setItem(CUSTOM_YASAI_KEY, jsonData);
-      setCustomYasai({ ...customYasai });
+      const jsonData = JSON.stringify(updatedHiryou);
+      await AsyncStorage.setItem(CUSTOM_HIRYOU_KEY, jsonData);
+      setCustomHiryou(updatedHiryou);
       setModalVisible(false);
       setEditingIndex(null);
     } catch (error) {
@@ -61,16 +65,16 @@ function CustomHiryou({ navigation }) {
 
   const onDeleteItem = async () => {
     if (editingIndex !== null) {
-      customYasai.yasai.splice(editingIndex, 1);
-      customYasai.N.splice(editingIndex, 1);
-      customYasai.P.splice(editingIndex, 1);
-      customYasai.K.splice(editingIndex, 1);
-      customYasai.W.splice(editingIndex, 1);
+      customHiryou.hiryou.splice(editingIndex, 1);
+      customHiryou.N.splice(editingIndex, 1);
+      customHiryou.P.splice(editingIndex, 1);
+      customHiryou.K.splice(editingIndex, 1);
+      customHiryou.Price.splice(editingIndex, 1);
 
       try {
-        const jsonData = JSON.stringify(customYasai);
-        await AsyncStorage.setItem(CUSTOM_YASAI_KEY, jsonData);
-        setCustomYasai({ ...customYasai });
+        const jsonData = JSON.stringify(customHiryou);
+        await AsyncStorage.setItem(CUSTOM_HIRYOU_KEY, jsonData);
+        setCustomHiryou({ ...customHiryou });
         setModalVisible(false);
         setEditingIndex(null);
       } catch (error) {
@@ -80,68 +84,68 @@ function CustomHiryou({ navigation }) {
   };
 
   const onEditItem = (index) => {
-    setNewYasai({
-      yasai: customYasai.yasai[index],
-      N: customYasai.N[index] ? customYasai.N[index].toString() : '0',
-      P: customYasai.P[index] ? customYasai.P[index].toString() : '0',
-      K: customYasai.K[index] ? customYasai.K[index].toString() : '0',
-      W: customYasai.W[index] ? customYasai.W[index].toString() : '0',
+    setNewHiryou({
+      hiryou: customHiryou.hiryou[index],
+      N: customHiryou.N[index] ? customHiryou.N[index].toString() : '0',
+      P: customHiryou.P[index] ? customHiryou.P[index].toString() : '0',
+      K: customHiryou.K[index] ? customHiryou.K[index].toString() : '0',
+      Price: customHiryou.Price[index] ? customHiryou.Price[index].toString() : '0',
     });
     setEditingIndex(index);
     setModalVisible(true);
   };
 
-  const renderYasaiItem = ({ item, index }) => (
+  const renderHiryouItem = ({ item, index }) => (
     <TouchableOpacity style={styles.row} onPress={() => onEditItem(index)}>
       <Text style={[styles.cell, styles.key]}>{item}</Text>
       <Text style={[styles.cell, styles.value]}>
-        {customYasai.N[index]}
+        {customHiryou.Price[index]}
         {' '}
-        g/㎡
+        円/g
       </Text>
       <Text style={[styles.cell, styles.value]}>
-        {customYasai.P[index]}
+        {customHiryou.N[index]}
         {' '}
-        g/㎡
+        %
       </Text>
       <Text style={[styles.cell, styles.value]}>
-        {customYasai.K[index]}
+        {customHiryou.P[index]}
         {' '}
-        g/㎡
+        %
       </Text>
       <Text style={[styles.cell, styles.value]}>
-        {customYasai.W[index]}
+        {customHiryou.K[index]}
         {' '}
-        g/㎡
+        %
       </Text>
     </TouchableOpacity>
   );
 
-  const renderYasaiHeader = () => (
+  const renderHiryouHeader = () => (
     <View style={styles.headerRow}>
       <Text style={[styles.headerCell, styles.keyHeader]}>名前</Text>
-      <Text style={[styles.headerCell, styles.valueHeader]}>N (g/㎡)</Text>
-      <Text style={[styles.headerCell, styles.valueHeader]}>P (g/㎡)</Text>
-      <Text style={[styles.headerCell, styles.valueHeader]}>K (g/㎡)</Text>
-      <Text style={[styles.headerCell, styles.valueHeader]}>W (g/㎡)</Text>
+      <Text style={[styles.headerCell, styles.valueHeader]}>価格</Text>
+      <Text style={[styles.headerCell, styles.valueHeader]}>N (%)</Text>
+      <Text style={[styles.headerCell, styles.valueHeader]}>P (%)</Text>
+      <Text style={[styles.headerCell, styles.valueHeader]}>K (%)</Text>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text>カスタム野菜データ</Text>
-      {renderYasaiHeader()}
+      <Text>カスタム肥料データ</Text>
+      {renderHiryouHeader()}
       <FlatList
-        data={customYasai.yasai}
-        renderItem={renderYasaiItem}
+        data={customHiryou.hiryou}
+        renderItem={renderHiryouItem}
         keyExtractor={(item, index) => index.toString()}
       />
       <Button
-        title="新しい野菜を登録する"
+        title="新しい肥料を登録する"
         onPress={() => {
           setEditingIndex(null);
-          setNewYasai({
-            yasai: '', N: '', P: '', K: '', W: '',
+          setNewHiryou({
+            hiryou: '', Price: '', N: '', P: '', K: '',
           });
           setModalVisible(true);
         }}
@@ -158,42 +162,42 @@ function CustomHiryou({ navigation }) {
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalView}>
-          <Text>野菜の名前</Text>
+          <Text>肥料の名前</Text>
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setNewYasai({ ...newYasai, yasai: text })}
-            value={newYasai.yasai}
-            placeholder="野菜の名前"
+            onChangeText={(text) => setNewHiryou({ ...newHiryou, hiryou: text })}
+            value={newHiryou.hiryou}
+            placeholder="肥料の名前"
           />
-          <Text>窒素N(g/㎡)</Text>
+          <Text>価格(円/g)</Text>
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setNewYasai({ ...newYasai, N: text })}
-            value={newYasai.N}
+            onChangeText={(text) => setNewHiryou({ ...newHiryou, Price: text })}
+            value={newHiryou.Price}
+            placeholder="単位は(円/g)で入力してください"
+          />
+          <Text>窒素N(%)</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setNewHiryou({ ...newHiryou, N: text })}
+            value={newHiryou.N}
             placeholder="窒素N"
           />
-          <Text>リンP(g/㎡)</Text>
+          <Text>リンP(%)</Text>
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setNewYasai({ ...newYasai, P: text })}
-            value={newYasai.P}
+            onChangeText={(text) => setNewHiryou({ ...newHiryou, P: text })}
+            value={newHiryou.P}
             placeholder="リンP"
           />
-          <Text>カリウムK(g/㎡)</Text>
+          <Text>カリウムK(%)</Text>
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setNewYasai({ ...newYasai, K: text })}
-            value={newYasai.K}
+            onChangeText={(text) => setNewHiryou({ ...newHiryou, K: text })}
+            value={newHiryou.K}
             placeholder="カリウムK"
           />
-          <Text>有機質量(g/㎡)</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setNewYasai({ ...newYasai, W: text })}
-            value={newYasai.W}
-            placeholder="2000が標準です"
-          />
-          <Button title="登録" onPress={addYasaiData} />
+          <Button title="登録" onPress={addHiryouData} />
           {editingIndex !== null && (
             <Button title="削除" onPress={onDeleteItem} color="red" />
           )}

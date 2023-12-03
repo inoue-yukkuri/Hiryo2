@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import FieldSizeInput from '../components/FieldSizeInput';
 import FertilizerUnitInput from '../components/FertilizerUnitInput';
 
@@ -24,6 +25,54 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
     idealItem: idealNPKW[index],
     calcItem: calcNPKW[index],
   }));
+
+  // カスタム野菜を読み込む
+  const CUSTOM_YASAI_KEY = 'customYasai';
+  const [customYasai, setCustomYasai] = useState({
+    yasai: [],
+    N: [],
+    P: [],
+    K: [],
+    W: [],
+  });
+
+  const loadYasaiData = async () => {
+    try {
+      const yasaiData = await AsyncStorage.getItem(CUSTOM_YASAI_KEY);
+      if (yasaiData) setCustomYasai(JSON.parse(yasaiData));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    loadYasaiData();
+    // console.log();
+  }, []);
+
+  // カスタム肥料を読み込む
+  const CUSTOM_HIRYOU_KEY = 'customHiryou';
+  const [customHiryou, setCustomHiryou] = useState({
+    hiryou: [],
+    Price: [],
+    N: [],
+    P: [],
+    K: [],
+  });
+
+  const loadHiryouData = async () => {
+    try {
+      const hiryouData = await AsyncStorage.getItem(CUSTOM_HIRYOU_KEY);
+      if (hiryouData) setCustomHiryou(JSON.parse(hiryouData));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    loadHiryouData();
+    // console.log(combinedHiryou);
+  }, []);
 
   const renderItem = ({ item }) => {
     // fieldSizeのlengthとwidthを掛け合わせた値を計算します
@@ -86,6 +135,8 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
         {
           c_yasai: selectYasai,
           c_hiryou: selectHiryou,
+          custom_yasai: customYasai,
+          custom_hiryou: customHiryou,
         },
         {
           headers: {

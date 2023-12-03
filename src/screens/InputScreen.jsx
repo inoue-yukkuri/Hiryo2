@@ -8,7 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomSelect from '../components/CustomSelect';
 import MultiSelectBox from '../components/MultiSelectBox';
 import { hiryou, vegetables } from '../components/data';
-import CustomHiryou from '../components/CustomHiryou';
 // import FieldSizeInput from '../components/FieldSizeInput';
 // import FertilizerUnitInput from '../components/FertilizerUnitInput';
 

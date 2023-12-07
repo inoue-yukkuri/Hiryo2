@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, Button, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity,
+  View, Text, Button, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity, Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -35,17 +35,35 @@ function CustomYasai({ navigation }) {
   };
 
   const addYasaiData = async () => {
+    // 入力検証
+    if (!newYasai.yasai.trim()) {
+      Alert.alert('野菜の名前を入力してください。');
+      return;
+    }
+
+    const n = parseFloat(newYasai.N);
+    const p = parseFloat(newYasai.P);
+    const k = parseFloat(newYasai.K);
+    const w = parseFloat(newYasai.W);
+
+    // eslint-disable-next-line max-len
+    if (Number.isNaN(n) || n < 0 || Number.isNaN(p) || p < 0 || Number.isNaN(k) || k < 0 || Number.isNaN(w) || w < 0) {
+      Alert.alert('N, P, K, Wの値は正の数でなければなりません。');
+      return;
+    }
+
+    // 既存のデータを更新または新しいデータを追加
     if (editingIndex !== null) {
-      customYasai.N[editingIndex] = parseFloat(newYasai.N);
-      customYasai.P[editingIndex] = parseFloat(newYasai.P);
-      customYasai.K[editingIndex] = parseFloat(newYasai.K);
-      customYasai.W[editingIndex] = parseFloat(newYasai.W);
+      customYasai.N[editingIndex] = n;
+      customYasai.P[editingIndex] = p;
+      customYasai.K[editingIndex] = k;
+      customYasai.W[editingIndex] = w;
     } else {
       customYasai.yasai.push(newYasai.yasai);
-      customYasai.N.push(parseFloat(newYasai.N));
-      customYasai.P.push(parseFloat(newYasai.P));
-      customYasai.K.push(parseFloat(newYasai.K));
-      customYasai.W.push(parseFloat(newYasai.W));
+      customYasai.N.push(n);
+      customYasai.P.push(p);
+      customYasai.K.push(k);
+      customYasai.W.push(w);
     }
 
     try {

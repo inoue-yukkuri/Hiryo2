@@ -184,8 +184,11 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
   };
 
   useEffect(() => {
-    performCalculation();
-  }, []);
+    // 両方の状態が読み込まれた後に計算を実行
+    if (customYasai.yasai.length > 0 && customHiryou.hiryou.length > 0) {
+      performCalculation();
+    }
+  }, [customYasai, customHiryou]);
 
   const [fieldSize, setFieldSize] = useState({
     length: '1.0',

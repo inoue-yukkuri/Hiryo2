@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, Button, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity,
+  View, Text, Button, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity, Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -35,6 +35,27 @@ function CustomHiryou({ navigation }) {
   };
 
   const addHiryouData = async () => {
+    // 入力検証
+    if (!newHiryou.hiryou.trim()) {
+      Alert.alert('エラー', '肥料の名前を入力してください。');
+      return;
+    }
+
+    const price = parseFloat(newHiryou.Price);
+    const n = parseFloat(newHiryou.N);
+    const p = parseFloat(newHiryou.P);
+    const k = parseFloat(newHiryou.K);
+
+    const isInvalidInput = Number.isNaN(price) || price < 0
+      || Number.isNaN(n) || n < 0
+      || Number.isNaN(p) || p < 0
+      || Number.isNaN(k) || k < 0;
+
+    if (isInvalidInput) {
+      Alert.alert('エラー', '価格と各成分の値は正の数でなければなりません。');
+      return;
+    }
+
     let updatedHiryou = { ...customHiryou };
 
     if (editingIndex !== null) {

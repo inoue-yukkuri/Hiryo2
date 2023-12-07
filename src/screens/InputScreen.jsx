@@ -34,7 +34,7 @@ export default function InputScreen(props) {
   // カスタム野菜を読み込む
   const [combinedVegetables, setCombinedVegetables] = useState(vegetables);
   const CUSTOM_YASAI_KEY = 'customYasai';
-  const [customYasai, setCustomYasai] = useState({
+  const [, setCustomYasai] = useState({
     yasai: [],
     N: [],
     P: [],
@@ -45,8 +45,10 @@ export default function InputScreen(props) {
   const loadYasaiData = async () => {
     try {
       const yasaiData = await AsyncStorage.getItem(CUSTOM_YASAI_KEY);
-      if (yasaiData) setCustomYasai(JSON.parse(yasaiData));
-      setCombinedVegetables([...vegetables, ...customYasai.yasai]);
+      const newCustomYasai = yasaiData ? JSON.parse(yasaiData) : { yasai: [] };
+      setCustomYasai(newCustomYasai);
+      // 直接結合された配列を作成
+      setCombinedVegetables([...vegetables, ...newCustomYasai.yasai]);
     } catch (error) {
       console.error(error);
     }
@@ -60,7 +62,7 @@ export default function InputScreen(props) {
   // カスタム肥料を読み込む
   const [combinedHiryou, setCombinedHiryou] = useState(hiryou);
   const CUSTOM_HIRYOU_KEY = 'customHiryou';
-  const [customHiryou, setCustomHiryou] = useState({
+  const [, setCustomHiryou] = useState({
     hiryou: [],
     Price: [],
     N: [],
@@ -71,8 +73,10 @@ export default function InputScreen(props) {
   const loadHiryouData = async () => {
     try {
       const hiryouData = await AsyncStorage.getItem(CUSTOM_HIRYOU_KEY);
-      if (hiryouData) setCustomHiryou(JSON.parse(hiryouData));
-      setCombinedHiryou([...hiryou, ...customHiryou.hiryou]);
+      const newCustomHiryou = hiryouData ? JSON.parse(hiryouData) : { hiryou: [] };
+      setCustomHiryou(newCustomHiryou);
+      // customHiryouの状態が更新されたときに結合された配列を作成し、状態を更新する
+      setCombinedHiryou([...hiryou, ...newCustomHiryou.hiryou]);
     } catch (error) {
       console.error(error);
     }

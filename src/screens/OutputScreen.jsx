@@ -25,6 +25,7 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
     idealItem: idealNPKW[index],
     calcItem: calcNPKW[index],
   }));
+  const [dataLoaded, setDataLoaded] = useState({ yasai: false, hiryou: false });
 
   // カスタム野菜を読み込む
   const CUSTOM_YASAI_KEY = 'customYasai';
@@ -40,6 +41,7 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
     try {
       const yasaiData = await AsyncStorage.getItem(CUSTOM_YASAI_KEY);
       if (yasaiData) setCustomYasai(JSON.parse(yasaiData));
+      setDataLoaded((prevState) => ({ ...prevState, yasai: true }));
     } catch (error) {
       console.error(error);
     }
@@ -64,6 +66,7 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
     try {
       const hiryouData = await AsyncStorage.getItem(CUSTOM_HIRYOU_KEY);
       if (hiryouData) setCustomHiryou(JSON.parse(hiryouData));
+      setDataLoaded((prevState) => ({ ...prevState, hiryou: true }));
     } catch (error) {
       console.error(error);
     }
@@ -185,10 +188,10 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
 
   useEffect(() => {
     // 両方の状態が読み込まれた後に計算を実行
-    if (customYasai.yasai.length > 0 && customHiryou.hiryou.length > 0) {
+    if (dataLoaded.yasai && dataLoaded.hiryou) {
       performCalculation();
     }
-  }, [customYasai, customHiryou]);
+  }, [dataLoaded]);
 
   const [fieldSize, setFieldSize] = useState({
     length: '1.0',

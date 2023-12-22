@@ -54,11 +54,6 @@ export default function InputScreen(props) {
     }
   };
 
-  useEffect(() => {
-    loadYasaiData();
-    console.log(combinedVegetables);
-  }, []);
-
   // カスタム肥料を読み込む
   const [combinedHiryou, setCombinedHiryou] = useState(hiryou);
   const CUSTOM_HIRYOU_KEY = 'customHiryou';
@@ -82,10 +77,12 @@ export default function InputScreen(props) {
     }
   };
 
-  useEffect(() => {
-    loadHiryouData();
-    // console.log(combinedHiryou);
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      loadYasaiData();
+      loadHiryouData();
+    }, []),
+  );
 
   const [calculationCounter, setCalculationCounter] = useState(0);
 

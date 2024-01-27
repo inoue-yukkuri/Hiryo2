@@ -5,9 +5,11 @@ import {
 import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 import CustomSelect from '../components/CustomSelect';
 import MultiSelectBox from '../components/MultiSelectBox';
 import { hiryou, vegetables } from '../components/data';
+
 // import FieldSizeInput from '../components/FieldSizeInput';
 // import FertilizerUnitInput from '../components/FertilizerUnitInput';
 
@@ -168,6 +170,17 @@ export default function InputScreen(props) {
     return null;
   }
 
+  const showUpgradeAlert = () => {
+    Alert.alert(
+      'アップグレードが必要です',
+      'ストアにて有料版をインストールしてください',
+      [
+        { text: 'OK', onPress: () => console.log('OK Pressed') }
+      ],
+      { cancelable: false },
+    );
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.container}>
@@ -226,12 +239,12 @@ export default function InputScreen(props) {
           </View>
 
           <Button
-            title="カスタム野菜データを作成する"
-            onPress={() => { navigation.navigate('CustomYasai'); }}
+            title="新しい野菜データを登録"
+            onPress={showUpgradeAlert}
           />
           <Button
-            title="カスタム肥料データを作成する"
-            onPress={() => { navigation.navigate('CustomHiryou'); }}
+            title="新しい肥料データを登録"
+            onPress={showUpgradeAlert}
           />
 
         </View>

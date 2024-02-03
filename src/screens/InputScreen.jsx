@@ -175,7 +175,7 @@ export default function InputScreen(props) {
       'アップグレードが必要です',
       'ストアにて有料版をインストールしてください',
       [
-        { text: 'OK', onPress: () => console.log('OK Pressed') }
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
       ],
       { cancelable: false },
     );
@@ -240,12 +240,22 @@ export default function InputScreen(props) {
 
           <Button
             title="新しい野菜データを登録"
+            onPress={() => { navigation.navigate('CustomYasai'); }}
+          />
+          <Button
+            title="新しい肥料データを登録"
+            onPress={() => { navigation.navigate('CustomHiryou'); }}
+          />
+
+          {/* 誘導ver
+          <Button
+            title="新しい野菜データを登録"
             onPress={showUpgradeAlert}
           />
           <Button
             title="新しい肥料データを登録"
             onPress={showUpgradeAlert}
-          />
+          /> */}
 
         </View>
       </View>

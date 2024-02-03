@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-  View, Text, Button, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity, Alert,
+  View, Text, Button, StyleSheet, FlatList, Modal, ScrollView,
+  TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CUSTOM_YASAI_KEY = 'customYasai';
 
 function CustomYasai({ navigation }) {
+  const scrollViewRef = useRef();
   const [customYasai, setCustomYasai] = useState({
     yasai: [],
     N: [],
@@ -175,48 +177,82 @@ function CustomYasai({ navigation }) {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalView}>
-          <Text>野菜の名前</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setNewYasai({ ...newYasai, yasai: text })}
-            value={newYasai.yasai}
-            placeholder="野菜の名前"
-          />
-          <Text>窒素N(g/㎡)</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setNewYasai({ ...newYasai, N: text })}
-            value={newYasai.N}
-            placeholder="窒素N"
-          />
-          <Text>リンP(g/㎡)</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setNewYasai({ ...newYasai, P: text })}
-            value={newYasai.P}
-            placeholder="リンP"
-          />
-          <Text>カリウムK(g/㎡)</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setNewYasai({ ...newYasai, K: text })}
-            value={newYasai.K}
-            placeholder="カリウムK"
-          />
-          <Text>有機質量(g/㎡)</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setNewYasai({ ...newYasai, W: text })}
-            value={newYasai.W}
-            placeholder="2000が標準です"
-          />
-          <Button title="登録" onPress={addYasaiData} />
-          {editingIndex !== null && (
-            <Button title="削除" onPress={onDeleteItem} color="red" />
-          )}
-          <Button title="キャンセル" onPress={() => setModalVisible(false)} />
-        </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1 }}
+        >
+          <View style={styles.modalView}>
+            <ScrollView
+              ref={scrollViewRef}
+              keyboardShouldPersistTaps="handled"
+            >
+              <Text>野菜の名前</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setNewYasai({ ...newYasai, yasai: text })}
+                value={newYasai.yasai}
+                placeholder="野菜の名前"
+                onFocus={() => {
+                  // TextInputの位置にスクロールする
+                  scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+                }}
+              />
+              <Text>窒素N(g/㎡)</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setNewYasai({ ...newYasai, N: text })}
+                value={newYasai.N}
+                placeholder="窒素N"
+                onFocus={() => {
+                  // TextInputの位置にスクロールする
+                  scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+                }}
+                keyboardType="numeric"
+              />
+              <Text>リンP(g/㎡)</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setNewYasai({ ...newYasai, P: text })}
+                value={newYasai.P}
+                placeholder="リンP"
+                onFocus={() => {
+                  // TextInputの位置にスクロールする
+                  scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+                }}
+                keyboardType="numeric"
+              />
+              <Text>カリウムK(g/㎡)</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setNewYasai({ ...newYasai, K: text })}
+                value={newYasai.K}
+                placeholder="カリウムK"
+                onFocus={() => {
+                  // TextInputの位置にスクロールする
+                  scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+                }}
+                keyboardType="numeric"
+              />
+              <Text>有機質量(g/㎡)</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setNewYasai({ ...newYasai, W: text })}
+                value={newYasai.W}
+                placeholder="2000が標準です"
+                onFocus={() => {
+                  // TextInputの位置にスクロールする
+                  scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+                }}
+                keyboardType="numeric"
+              />
+              <Button title="登録" onPress={addYasaiData} />
+              {editingIndex !== null && (
+                <Button title="削除" onPress={onDeleteItem} color="red" />
+              )}
+              <Button title="キャンセル" onPress={() => setModalVisible(false)} />
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
   );

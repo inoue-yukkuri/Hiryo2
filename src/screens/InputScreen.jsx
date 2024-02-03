@@ -170,16 +170,16 @@ export default function InputScreen(props) {
     return null;
   }
 
-  const showUpgradeAlert = () => {
-    Alert.alert(
-      'アップグレードが必要です',
-      'ストアにて有料版をインストールしてください',
-      [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ],
-      { cancelable: false },
-    );
-  };
+  // const showUpgradeAlert = () => {
+  //   Alert.alert(
+  //     'アップグレードが必要です',
+  //     'ストアにて有料版をインストールしてください',
+  //     [
+  //       { text: 'OK', onPress: () => console.log('OK Pressed') },
+  //     ],
+  //     { cancelable: false },
+  //   );
+  // };
 
   return (
     <ScrollView style={styles.container}>

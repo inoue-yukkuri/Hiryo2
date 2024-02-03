@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-  View, Text, Button, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity, Alert,
+  View, Text, Button, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity,
+  Alert, ScrollView, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CUSTOM_HIRYOU_KEY = 'customHiryou';
 
 function CustomHiryou({ navigation }) {
+  const scrollViewRef = useRef();
   const [customHiryou, setCustomHiryou] = useState({
     hiryou: [],
     Price: [],
@@ -178,48 +180,82 @@ function CustomHiryou({ navigation }) {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalView}>
-          <Text>肥料の名前</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setNewHiryou({ ...newHiryou, hiryou: text })}
-            value={newHiryou.hiryou}
-            placeholder="肥料の名前"
-          />
-          <Text>価格(円/g)</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setNewHiryou({ ...newHiryou, Price: text })}
-            value={newHiryou.Price}
-            placeholder="単位は(円/g)で入力"
-          />
-          <Text>窒素N(百分率)</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setNewHiryou({ ...newHiryou, N: text })}
-            value={newHiryou.N}
-            placeholder="例)14%の場合は0.14"
-          />
-          <Text>リンP(百分率)</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setNewHiryou({ ...newHiryou, P: text })}
-            value={newHiryou.P}
-            placeholder="例)14%の場合は0.14"
-          />
-          <Text>カリウムK(百分率)</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setNewHiryou({ ...newHiryou, K: text })}
-            value={newHiryou.K}
-            placeholder="例)14%の場合は0.14"
-          />
-          <Button title="登録" onPress={addHiryouData} />
-          {editingIndex !== null && (
-            <Button title="削除" onPress={onDeleteItem} color="red" />
-          )}
-          <Button title="キャンセル" onPress={() => setModalVisible(false)} />
-        </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1 }}
+        >
+          <View style={styles.modalView}>
+            <ScrollView
+              ref={scrollViewRef}
+              keyboardShouldPersistTaps="handled"
+            >
+              <Text>肥料の名前</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setNewHiryou({ ...newHiryou, hiryou: text })}
+                value={newHiryou.hiryou}
+                placeholder="肥料の名前"
+                onFocus={() => {
+                  // TextInputの位置にスクロールする
+                  scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+                }}
+              />
+              <Text>価格(円/g)</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setNewHiryou({ ...newHiryou, Price: text })}
+                value={newHiryou.Price}
+                placeholder="単位は(円/g)で入力"
+                onFocus={() => {
+                  // TextInputの位置にスクロールする
+                  scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+                }}
+                keyboardType="numeric"
+              />
+              <Text>窒素N(百分率)</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setNewHiryou({ ...newHiryou, N: text })}
+                value={newHiryou.N}
+                placeholder="例)14%の場合は0.14"
+                onFocus={() => {
+                  // TextInputの位置にスクロールする
+                  scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+                }}
+                keyboardType="numeric"
+              />
+              <Text>リンP(百分率)</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setNewHiryou({ ...newHiryou, P: text })}
+                value={newHiryou.P}
+                placeholder="例)14%の場合は0.14"
+                onFocus={() => {
+                  // TextInputの位置にスクロールする
+                  scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+                }}
+                keyboardType="numeric"
+              />
+              <Text>カリウムK(百分率)</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setNewHiryou({ ...newHiryou, K: text })}
+                value={newHiryou.K}
+                placeholder="例)14%の場合は0.14"
+                onFocus={() => {
+                  // TextInputの位置にスクロールする
+                  scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+                }}
+                keyboardType="numeric"
+              />
+              <Button title="登録" onPress={addHiryouData} />
+              {editingIndex !== null && (
+                <Button title="削除" onPress={onDeleteItem} color="red" />
+              )}
+              <Button title="キャンセル" onPress={() => setModalVisible(false)} />
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
   );

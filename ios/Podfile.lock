@@ -5,15 +5,15 @@ PODS:
     - ExpoModulesCore
   - EXConstants (14.4.2):
     - ExpoModulesCore
-  - EXFileSystem (15.4.4):
+  - EXFileSystem (15.4.5):
     - ExpoModulesCore
   - EXFont (11.4.0):
     - ExpoModulesCore
-  - Expo (49.0.16):
+  - Expo (49.0.22):
     - ExpoModulesCore
   - ExpoKeepAwake (12.3.0):
     - ExpoModulesCore
-  - ExpoModulesCore (1.5.11):
+  - ExpoModulesCore (1.5.13):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - React-NativeModulesApple
@@ -33,7 +33,7 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.72.6)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - Google-Mobile-Ads-SDK (10.12.0):
+  - Google-Mobile-Ads-SDK (10.14.0):
     - GoogleAppMeasurement (< 11.0, >= 7.0)
     - GoogleUserMessagingPlatform (>= 1.1)
   - GoogleAppMeasurement (10.19.0):
@@ -500,18 +500,18 @@ PODS:
     - React-jsi (= 0.72.6)
     - React-logger (= 0.72.6)
     - React-perflogger (= 0.72.6)
-  - RNCAsyncStorage (1.19.4):
+  - RNCAsyncStorage (1.21.0):
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
-  - RNCPicker (2.4.10):
+  - RNCPicker (2.6.1):
     - React-Core
   - RNFS (2.20.0):
     - React-Core
   - RNGestureHandler (2.12.1):
     - React-Core
-  - RNGoogleMobileAds (12.3.0):
-    - Google-Mobile-Ads-SDK (= 10.12.0)
+  - RNGoogleMobileAds (12.10.0):
+    - Google-Mobile-Ads-SDK (= 10.14.0)
     - GoogleUserMessagingPlatform (= 2.1.0)
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
@@ -710,17 +710,17 @@ SPEC CHECKSUMS:
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   EXApplication: 042aa2e3f05258a16962ea1a9914bf288db9c9a1
   EXConstants: ce5bbea779da8031ac818c36bea41b10e14d04e1
-  EXFileSystem: 2b826a3bf1071a4b80a8457e97124783d1ac860e
+  EXFileSystem: f8b838a880254de42a5a7da20ed5ce12e2697c1b
   EXFont: 738c44c390953ebcbab075a4848bfbef025fd9ee
-  Expo: fcfd60c1ed6806dee5103b210335ae0c72f675ed
+  Expo: 9060b49fecf07bebf1dd967730d079aa5e750ebe
   ExpoKeepAwake: be4cbd52d9b177cde0fd66daa1913afa3161fc1d
-  ExpoModulesCore: 81037d28453615c4206a6a2ca7556a0f364a0a0a
+  ExpoModulesCore: d2208be53c1b694c9a5898e871315cae77cb11bd
   EXSplashScreen: 2c80621e4bc952f5bea328304c2436f5fe21c2a0
   FBLazyVector: 748c0ef74f2bf4b36cfcccf37916806940a64c32
   FBReactNativeSpec: 966f29e4e697de53a3b366355e8f57375c856ad9
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
-  Google-Mobile-Ads-SDK: 976fdf273815674eed30b8aafffedb3c25b055e4
+  Google-Mobile-Ads-SDK: 8f67a72f88d057335b1ac3f501e2b68ad054116e
   GoogleAppMeasurement: 68afe759316673c6554dac35a0c7ae8f5d6cb4ed
   GoogleUserMessagingPlatform: dce302b8f1b84d6e945812ee7a15c3f65a102cbf
   GoogleUtilities: 0759d1a57ebb953965c2dfe0ba4c82e95ccc2e34
@@ -761,12 +761,12 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 76eb364c37e6c20845cfe0cb049f883021bdfccf
   React-utils: 1dc03e6e55f56388b6fdde3768a66c885bacb627
   ReactCommon: cfe086d2e2ec9f2907c66666c856082608fba822
-  RNCAsyncStorage: 3a8f7145d17cdd9f88e7b77666c94a09e4f759c8
+  RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
-  RNCPicker: 0bc2f0a29abcca7b7ed44a2d036aac9ab6d25700
+  RNCPicker: b18aaf30df596e9b1738e7c1f9ee55402a229dca
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: c0d04458598fcb26052494ae23dda8f8f5162b13
-  RNGoogleMobileAds: 558b3fa3c365aaba5d928b794b597fa85cff5494
+  RNGoogleMobileAds: d72f57c54308f331a235d484df3923d4f20ae358
   RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603

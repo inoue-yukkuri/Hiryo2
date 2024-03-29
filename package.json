@@ -1,14 +1,15 @@
 {
   "name": "hiryo2",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.19.4",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-picker/picker": "^2.4.10",
     "@react-navigation/native": "^5.9.8",
@@ -16,6 +17,7 @@
     "axios": "^1.5.0",
     "csvtojson": "^2.0.10",
     "expo": "^49.0.16",
+    "expo-splash-screen": "~0.20.5",
     "expo-status-bar": "~1.6.0",
     "javascript-lp-solver": "^0.4.24",
     "prop-types": "^15.8.1",
@@ -24,10 +26,11 @@
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.12.0",
+    "react-native-google-mobile-ads": "^12.3.0",
     "react-native-multi-select": "^0.1.1",
-    "react-native-reanimated": "~3.3.0",
     "react-native-safe-area-context": "4.6.3",
-    "react-native-screens": "~3.22.0"
+    "react-native-screens": "~3.22.0",
+    "expo-build-properties": "~0.8.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

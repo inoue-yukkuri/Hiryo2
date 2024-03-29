@@ -1,12 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, ScrollView,
+  View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Button,
 } from 'react-native';
+import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 import CustomSelect from '../components/CustomSelect';
 import MultiSelectBox from '../components/MultiSelectBox';
 import { hiryou, vegetables } from '../components/data';
+
 // import FieldSizeInput from '../components/FieldSizeInput';
 // import FertilizerUnitInput from '../components/FertilizerUnitInput';
+
+// eslint-disable-next-line no-undef
+const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-4189981999969719/6208422377';
+
+const rewarded = RewardedAd.createForAdRequest(adUnitId, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ['fashion', 'clothing'],
+});
+
+const MAX_FREE_CALCULATIONS_PER_DAY = 5;
+const LAST_USED_DATE_KEY = 'lastUsedDate';
+const CALCULATION_COUNTER_KEY = 'calculationCounter';
 
 export default function InputScreen(props) {
   const { navigation } = props;
@@ -15,6 +32,154 @@ export default function InputScreen(props) {
   const handleSelectionChange = (items) => {
     setSelectedHiryou(items);
   };
+
+  // カスタム野菜を読み込む
+  const [combinedVegetables, setCombinedVegetables] = useState(vegetables);
+  const CUSTOM_YASAI_KEY = 'customYasai';
+  const [, setCustomYasai] = useState({
+    yasai: [],
+    N: [],
+    P: [],
+    K: [],
+    W: [],
+  });
+
+  const loadYasaiData = async () => {
+    try {
+      const yasaiData = await AsyncStorage.getItem(CUSTOM_YASAI_KEY);
+      const newCustomYasai = yasaiData ? JSON.parse(yasaiData) : { yasai: [] };
+      setCustomYasai(newCustomYasai);
+      // 直接結合された配列を作成
+      setCombinedVegetables([...vegetables, ...newCustomYasai.yasai]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // カスタム肥料を読み込む
+  const [combinedHiryou, setCombinedHiryou] = useState(hiryou);
+  const CUSTOM_HIRYOU_KEY = 'customHiryou';
+  const [, setCustomHiryou] = useState({
+    hiryou: [],
+    Price: [],
+    N: [],
+    P: [],
+    K: [],
+  });
+
+  const loadHiryouData = async () => {
+    try {
+      const hiryouData = await AsyncStorage.getItem(CUSTOM_HIRYOU_KEY);
+      const newCustomHiryou = hiryouData ? JSON.parse(hiryouData) : { hiryou: [] };
+      setCustomHiryou(newCustomHiryou);
+      // customHiryouの状態が更新されたときに結合された配列を作成し、状態を更新する
+      setCombinedHiryou([...hiryou, ...newCustomHiryou.hiryou]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadYasaiData();
+      loadHiryouData();
+    }, []),
+  );
+
+  const [calculationCounter, setCalculationCounter] = useState(0);
+
+  useEffect(() => {
+    // アプリ起動時に最後に使用した日付と計算回数を取得
+    const initializeCounter = async () => {
+      const lastUsedDate = await AsyncStorage.getItem(LAST_USED_DATE_KEY);
+      const today = new Date().toISOString().split('T')[0];
+      if (lastUsedDate === today) {
+        // 同じ日付であれば、計算回数を取得
+        const counterString = await AsyncStorage.getItem(CALCULATION_COUNTER_KEY);
+        setCalculationCounter(parseInt(counterString, 10) || 0);
+      } else {
+        // 新しい日付であれば、カウンタをリセット
+        await AsyncStorage.setItem(LAST_USED_DATE_KEY, today);
+        setCalculationCounter(0);
+        await AsyncStorage.setItem(CALCULATION_COUNTER_KEY, '0');
+      }
+    };
+    initializeCounter();
+  }, []);
+
+  const navigateToOutputScreen = async () => {
+    // 移動回数を増やす
+    const newCounter = calculationCounter + 1;
+    setCalculationCounter(newCounter);
+    await AsyncStorage.setItem(CALCULATION_COUNTER_KEY, newCounter.toString());
+
+    if (newCounter > MAX_FREE_CALCULATIONS_PER_DAY) {
+      // リワード広告を表示
+      rewarded.show();
+      setCalculationCounter(0);
+      navigation.navigate('Output', { selectedHiryou, selectedYasai });
+    } else {
+      // 通常の画面遷移
+      navigation.navigate('Output', { selectedHiryou, selectedYasai });
+    }
+  };
+
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+      setLoaded(true);
+      // rewarded.show();
+    });
+    const unsubscribeEarned = rewarded.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      (reward) => {
+        console.log('User earned reward of ', reward);
+        // rewarded.load();
+        setLoaded(false);
+      },
+    );
+
+    // Start loading the rewarded ad straight away
+    rewarded.load();
+
+    // Unsubscribe from events on unmount
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+    };
+  }, []);
+
+  // 広告をロードする関数
+  const loadAd = () => {
+    if (!loaded) {
+      rewarded.load();
+    }
+  };
+
+  // 画面がフォーカスされた時に広告を再ロード
+  useFocusEffect(
+    React.useCallback(() => {
+      loadAd();
+      // ここに依存配列として 'loaded' ステートを指定します
+    }, [loaded]),
+  );
+
+  // No advert ready to show yet
+  if (!loaded) {
+    return null;
+  }
+
+  // const showUpgradeAlert = () => {
+  //   Alert.alert(
+  //     'アップグレードが必要です',
+  //     'ストアにて有料版をインストールしてください',
+  //     [
+  //       { text: 'OK', onPress: () => console.log('OK Pressed') },
+  //     ],
+  //     { cancelable: false },
+  //   );
+  // };
 
   return (
     <ScrollView style={styles.container}>
@@ -27,7 +192,7 @@ export default function InputScreen(props) {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>1.植えたい野菜を選んでください</Text>
               <CustomSelect
-                data={vegetables}
+                data={combinedVegetables}
                 onSelect={(item) => setSelectedYasai(item)}
               />
             </View>
@@ -35,7 +200,7 @@ export default function InputScreen(props) {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>2.使用できる肥料を複数選んでください</Text>
               <MultiSelectBox
-                options={hiryou}
+                options={combinedHiryou}
                 onSelectionChange={handleSelectionChange}
               />
 
@@ -65,13 +230,32 @@ export default function InputScreen(props) {
               <TouchableOpacity
                 style={styles.calculateButton}
                 onPress={() => {
-                  navigation.navigate('Output', { selectedHiryou, selectedYasai });
+                  navigateToOutputScreen();
                 }}
               >
                 <Text style={styles.calculateButtonText}>計算</Text>
               </TouchableOpacity>
             </View>
           </View>
+
+          <Button
+            title="新しい野菜データを登録"
+            onPress={() => { navigation.navigate('CustomYasai'); }}
+          />
+          <Button
+            title="新しい肥料データを登録"
+            onPress={() => { navigation.navigate('CustomHiryou'); }}
+          />
+
+          {/* 誘導ver
+          <Button
+            title="新しい野菜データを登録"
+            onPress={showUpgradeAlert}
+          />
+          <Button
+            title="新しい肥料データを登録"
+            onPress={showUpgradeAlert}
+          /> */}
 
         </View>
       </View>

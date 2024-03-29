@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, Image, FlatList, ActivityIndicator, TouchableOpacity, ScrollView, Alert,
+  View, Text, StyleSheet, Image, FlatList, ActivityIndicator, TouchableOpacity, ScrollView,
 
 } from 'react-native';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import FieldSizeInput from '../components/FieldSizeInput';
 import FertilizerUnitInput from '../components/FertilizerUnitInput';
 
@@ -13,9 +14,68 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
   const selectYasai = route.params.selectedYasai;
   const [values, setValues] = useState([]);
   const [totalCost, setTotalCost] = useState(0);
+  const arrayNPKW = ['窒素(N)', 'リン(P)', 'カリウム(K)', '有機質量'];
+  const [calcNPKW, setCalcNPKW] = useState([]);
+  const [idealNPKW, setidealNPKW] = useState([]);
   const [, setStatus] = useState('');
-  const [imageSource, setimageSource] = useState('unknown');
+  const [imageSource, setimageSource] = useState(require('../../assets/23223480.jpg'));
   const [OptimalText, setOptimalText] = useState('unknown');
+  const NPKWcombinedData = arrayNPKW.map((item, index) => ({
+    arrayItem: item,
+    idealItem: idealNPKW[index],
+    calcItem: calcNPKW[index],
+  }));
+  const [dataLoaded, setDataLoaded] = useState({ yasai: false, hiryou: false });
+
+  // カスタム野菜を読み込む
+  const CUSTOM_YASAI_KEY = 'customYasai';
+  const [customYasai, setCustomYasai] = useState({
+    yasai: [],
+    N: [],
+    P: [],
+    K: [],
+    W: [],
+  });
+
+  const loadYasaiData = async () => {
+    try {
+      const yasaiData = await AsyncStorage.getItem(CUSTOM_YASAI_KEY);
+      if (yasaiData) setCustomYasai(JSON.parse(yasaiData));
+      setDataLoaded((prevState) => ({ ...prevState, yasai: true }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    loadYasaiData();
+    // console.log();
+  }, []);
+
+  // カスタム肥料を読み込む
+  const CUSTOM_HIRYOU_KEY = 'customHiryou';
+  const [customHiryou, setCustomHiryou] = useState({
+    hiryou: [],
+    Price: [],
+    N: [],
+    P: [],
+    K: [],
+  });
+
+  const loadHiryouData = async () => {
+    try {
+      const hiryouData = await AsyncStorage.getItem(CUSTOM_HIRYOU_KEY);
+      if (hiryouData) setCustomHiryou(JSON.parse(hiryouData));
+      setDataLoaded((prevState) => ({ ...prevState, hiryou: true }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    loadHiryouData();
+    // console.log(combinedHiryou);
+  }, []);
 
   const renderItem = ({ item }) => {
     // fieldSizeのlengthとwidthを掛け合わせた値を計算します
@@ -49,6 +109,23 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
       </View>
     );
   };
+
+  const renderItem2 = ({ item }) => (
+    <View style={styles.row}>
+      <Text style={styles.cell}>{item.arrayItem}</Text>
+      <Text style={styles.cell}>
+        {item.idealItem.toFixed(1)}
+        {' '}
+        g/㎡
+      </Text>
+      <Text style={styles.cell}>
+        {item.calcItem.toFixed(1)}
+        {' '}
+        g/㎡
+      </Text>
+    </View>
+  );
+
   console.log('selectYasai:', selectYasai);
 
   const [loading, setLoading] = useState(true);
@@ -57,10 +134,12 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
   const performCalculation = async () => {
     try {
       const response = await axios.post(
-        'http://52.199.108.162:8000/hiryou_calc',
+        'https://www.saitekikun.com/hiryou_calc',
         {
           c_yasai: selectYasai,
           c_hiryou: selectHiryou,
+          custom_yasai: customYasai,
+          custom_hiryou: customHiryou,
         },
         {
           headers: {
@@ -74,26 +153,31 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
       const newValues = response.data.result['必要な量'];
       const statusValue = response.data.result.status; // statusを取得
       const totalCostValue = response.data.result['総費用'];
+      const newcalcNPKW = response.data.result['最適化後NPKW'];
+      const newidealNPKW = response.data.result['理想量'];
 
       setValues(newValues);
       setStatus(statusValue); // statusをstateにセット
       setTotalCost(totalCostValue);
+      setCalcNPKW(newcalcNPKW);
+      setidealNPKW(newidealNPKW);
 
       // statusValueがOptimalでない場合、アラートを表示
       if (statusValue === 'Optimal') {
-        Alert.alert('良い最適解が得られました！');
+        // Alert.alert('良い最適解が得られました！');
         setimageSource(require('../../assets/23167399.jpg'));
         setOptimalText('良い精度の最適解が得られました！');
-      } else if (newValues.some((value) => value > 0)) {
-        Alert.alert('最適解が得られました！');
+      } else if (newValues.every((value) => value >= 0)) {
+        // Alert.alert('最適解が得られました！');
         setimageSource(require('../../assets/23223480.jpg'));
-        setOptimalText('最適解が得られました。');
+        setOptimalText('最適解が得られました');
       } else {
-        Alert.alert('最適解が得られませんでした…');
+        // Alert.alert('最適解が得られませんでした…');
         setimageSource(require('../../assets/24345980.jpg'));
         setOptimalText('最適解が得られませんでした…肥料の組み合わせを変えて計算し直すことをおすすめします');
       }
 
+      console.log('customYasai :', customYasai);
       console.log('API response:', response.data);
     } catch (error) {
       console.error('API request error:', error);
@@ -103,8 +187,11 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
   };
 
   useEffect(() => {
-    performCalculation();
-  }, []);
+    // 両方の状態が読み込まれた後に計算を実行
+    if (dataLoaded.yasai && dataLoaded.hiryou) {
+      performCalculation();
+    }
+  }, [dataLoaded]);
 
   const [fieldSize, setFieldSize] = useState({
     length: '1.0',
@@ -155,6 +242,7 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
             <Text style={styles.NotsectionText}>
               {OptimalText}
             </Text>
+
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>
                 肥料の最適な配分【
@@ -192,6 +280,9 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
                 {parseFloat(totalCost).toFixed(1)}
                 円になります
               </Text>
+              <Text style={styles.totalCostText}>
+                計算結果は元肥の量です。野菜の成長に合わせて追肥等をしてください
+              </Text>
             </View>
 
             <View style={styles.buttonContainer}>
@@ -217,6 +308,35 @@ function OutputScreen({ navigation, route }) { // propsをデストラクティ�
               />
               <Text>出力される肥料の単位</Text>
               <FertilizerUnitInput onUnitSelected={setFertilizerUnit} />
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>
+                施肥基準と計算結果の比較【
+                {selectYasai}
+                】
+              </Text>
+
+              {/* Table header */}
+              <View style={styles.row}>
+                <Text style={[styles.cell, styles.header]}>肥料成分</Text>
+                <Text style={[styles.cell, styles.header]}>施肥基準</Text>
+                <Text style={[styles.cell, styles.header]}>計算結果</Text>
+              </View>
+
+              {/* Table content */}
+              <FlatList
+                data={NPKWcombinedData}
+                renderItem={renderItem2}
+                keyExtractor={(item, index) => `NPKW-${index}`}
+                style={styles.flatlist}
+                scrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+              />
+
+              <Text style={styles.totalCostText}>
+                農林水産省の施肥基準を参考にしています
+              </Text>
             </View>
 
           </View>
